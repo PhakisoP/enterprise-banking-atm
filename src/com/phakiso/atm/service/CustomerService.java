@@ -1,23 +1,12 @@
-package com.phakiso.atm.app;
+package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
 
-public class Main {
+public class CustomerService {
 
-    public static void main(String[] args) {
+    public void displayCustomer(Customer customer) {
 
-        Customer customer = new Customer(
-                1,
-                "Phakiso",
-                "Pitso",
-                "9001015009088",
-                "0812345678",
-                "phakiso@email.com"
-        );
-
-        System.out.println("Customer Created Successfully!");
-
-        System.out.println("----------------------------");
+        System.out.println("--------------------------------");
 
         System.out.println("Customer ID : " + customer.getCustomerId());
 
@@ -30,6 +19,7 @@ public class Main {
         System.out.println("Phone : " + customer.getPhoneNumber());
 
         System.out.println("Email : " + customer.getEmail());
+
     }
 
 }

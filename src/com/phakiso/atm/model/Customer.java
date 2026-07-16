@@ -23,4 +23,27 @@ public class Customer {
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }
