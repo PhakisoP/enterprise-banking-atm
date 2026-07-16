@@ -1,6 +1,7 @@
 package com.phakiso.atm.app;
 
 import com.phakiso.atm.model.Customer;
+import com.phakiso.atm.service.CustomerService;
 
 public class Main {
 
@@ -18,18 +19,9 @@ public class Main {
         System.out.println("Customer Created Successfully!");
 
         System.out.println("----------------------------");
+        CustomerService customerService = new CustomerService();
 
-        System.out.println("Customer ID : " + customer.getCustomerId());
-
-        System.out.println("First Name : " + customer.getFirstName());
-
-        System.out.println("Last Name : " + customer.getLastName());
-
-        System.out.println("ID Number : " + customer.getIdNumber());
-
-        System.out.println("Phone : " + customer.getPhoneNumber());
-
-        System.out.println("Email : " + customer.getEmail());
+        customerService.displayCustomer(customer);
     }
 
 }
