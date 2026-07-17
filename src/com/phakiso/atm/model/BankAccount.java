@@ -65,4 +65,9 @@ public class BankAccount {
         System.out.println("Amount Withdrawn : R" + amount);
         System.out.println("New Balance      : R" + balance);
     }
+    public boolean validatePin(String enteredPin) {
+
+        return pin.equals(enteredPin);
+
+    }
 }
