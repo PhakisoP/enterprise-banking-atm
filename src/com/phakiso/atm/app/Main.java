@@ -1,11 +1,13 @@
 package com.phakiso.atm.app;
 
 import com.phakiso.atm.model.BankAccount;
+import com.phakiso.atm.service.CustomerService;
 import com.phakiso.atm.model.Customer;
 
 public class Main {
 
     public static void main(String[] args) {
+
 
         BankAccount account = new BankAccount(
                 100001,
@@ -48,5 +50,11 @@ public class Main {
         System.out.println(customer.getAccount().getAccountNumber());
         System.out.println(customer.getAccount().getBalance());
         System.out.println(customer.getAccount().getAccountType());
+
+        CustomerService customerService = new CustomerService();
+
+        customerService.displayMenu();
+
     }
+
 }
