@@ -16,8 +16,8 @@ public class BankAccount {
         this.accountType = accountType;
         this.balance = balance;
         this.pin = pin;
-
     }
+
     public int getAccountNumber() {
         return accountNumber;
     }
@@ -33,4 +33,19 @@ public class BankAccount {
     public String getPin() {
         return pin;
     }
+
+    public void deposit(double amount) {
+
+        if (amount <= 0) {
+            System.out.println("Deposit amount must be greater than zero.");
+            return;
+        }
+
+        balance += amount;
+
+        System.out.println("Deposit Successful!");
+        System.out.println("Amount Deposited : R" + amount);
+        System.out.println("New Balance      : R" + balance);
     }
+
+}

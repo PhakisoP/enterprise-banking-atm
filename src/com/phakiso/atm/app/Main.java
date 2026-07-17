@@ -25,6 +25,11 @@ public class Main {
                         "phakiso@email.com",
                         account
                 );
+        System.out.println("Current Balance : R" + account.getBalance());
+
+        System.out.println();
+
+        account.deposit(500);
 
         System.out.println(customer.getFirstName());
 
