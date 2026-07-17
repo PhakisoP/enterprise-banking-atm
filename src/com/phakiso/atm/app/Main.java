@@ -30,6 +30,16 @@ public class Main {
         System.out.println();
 
         account.deposit(500);
+        System.out.println("Current Balance : R" + account.getBalance());
+
+        System.out.println();
+
+        account.withdraw(5000);
+
+        System.out.println();
+
+        System.out.println(customer.getFirstName());
+        System.out.println(customer.getAccount().getBalance());
 
         System.out.println(customer.getFirstName());
 

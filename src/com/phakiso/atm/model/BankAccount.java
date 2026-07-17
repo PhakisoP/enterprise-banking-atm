@@ -47,5 +47,22 @@ public class BankAccount {
         System.out.println("Amount Deposited : R" + amount);
         System.out.println("New Balance      : R" + balance);
     }
+    public void withdraw(double amount) {
 
+        if (amount <= 0) {
+            System.out.println("Withdrawal amount must be greater than zero.");
+            return;
+        }
+
+        if (amount > balance) {
+            System.out.println("Insufficient funds.");
+            return;
+        }
+
+        balance -= amount;
+
+        System.out.println("Withdrawal Successful!");
+        System.out.println("Amount Withdrawn : R" + amount);
+        System.out.println("New Balance      : R" + balance);
+    }
 }
