@@ -8,25 +8,31 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Customer customer = new Customer(
-                1,
-                "Phakiso",
-                "Pitso",
-                "9001015009088",
-                "0812345678",
-                "phakiso@email.com"
-        );
-        BankAccount account = new BankAccount(
-                100001,
-                "Savings",
-                15000.00,
-                "1234"
-        );
+        BankAccount account =
+                new BankAccount(
+                        100001,
+                        "Savings",
+                        15000,
+                        "1234"
+                );
+        Customer customer =
+                new Customer(
+                        1,
+                        "Phakiso",
+                        "Pitso",
+                        "9001015009088",
+                        "0812345678",
+                        "phakiso@email.com",
+                        account
+                );
 
-        System.out.println("Account Number : " + account.getAccountNumber());
-        System.out.println("Account Type   : " + account.getAccountType());
-        System.out.println("Balance        : R" + account.getBalance());
-        System.out.println("PIN            : " + account.getPin());
+        System.out.println(customer.getFirstName());
+
+        System.out.println(customer.getAccount().getAccountNumber());
+
+        System.out.println(customer.getAccount().getBalance());
+
+        System.out.println(customer.getAccount().getAccountType());
     }
 
 }

@@ -8,13 +8,17 @@ public class Customer {
     private String idNumber;
     private String phoneNumber;
     private String email;
+    private BankAccount account;
 
-    public Customer(int customerId,
-                    String firstName,
-                    String lastName,
-                    String idNumber,
-                    String phoneNumber,
-                    String email) {
+    public Customer(
+            int customerId,
+            String firstName,
+            String lastName,
+            String idNumber,
+            String phoneNumber,
+            String email,
+            BankAccount account
+    ) {
 
         this.customerId = customerId;
         this.firstName = firstName;
@@ -22,6 +26,7 @@ public class Customer {
         this.idNumber = idNumber;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.account = account;
     }
     public int getCustomerId() {
         return customerId;
@@ -45,5 +50,11 @@ public class Customer {
 
     public String getEmail() {
         return email;
+
+
+    }
+
+    public BankAccount getAccount() {
+        return account;
     }
 }
