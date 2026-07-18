@@ -52,8 +52,7 @@ public class Main {
         System.out.println(customer.getAccount().getAccountType());
 
         CustomerService customerService = new CustomerService();
-
-        customerService.displayMenu();
+        customerService.displayMenu(customer);
 
     }
 

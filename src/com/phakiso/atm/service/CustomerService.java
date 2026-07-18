@@ -26,7 +26,7 @@ public class CustomerService {
                 customer.getAccount().getBalance());
 
     }
-    public void displayMenu() {
+    public void displayMenu(Customer customer) {
 
         System.out.println();
         System.out.println("==============================");
@@ -43,7 +43,33 @@ public class CustomerService {
         int option = scanner.nextInt();
 
         System.out.println();
-        System.out.println("You selected option " + option);
+        switch (option) {
+
+            case 1:
+                System.out.println("Current Balance : R" + customer.getAccount().getBalance());
+                break;
+
+            case 2:
+                System.out.print("Enter deposit amount: R");
+                double depositAmount = scanner.nextDouble();
+
+                customer.getAccount().deposit(depositAmount);
+                break;
+
+            case 3:
+                System.out.print("Enter withdrawal amount: R");
+                double withdrawalAmount = scanner.nextDouble();
+
+                customer.getAccount().withdraw(withdrawalAmount);
+                break;
+
+            case 4:
+                System.out.println("Thank you for using Enterprise Banking ATM.");
+                break;
+
+            default:
+                System.out.println("Invalid option.");
+        }
 
 
     }
