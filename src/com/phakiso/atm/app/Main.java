@@ -26,34 +26,12 @@ public class Main {
                 account
         );
 
-        System.out.println("Current Balance : R" + account.getBalance());
-
-        System.out.println();
-
-        account.deposit(500);
-
-        System.out.println();
-
-        account.withdraw(5000);
-
-        System.out.println();
-
-        if (account.validatePin("1234")) {
-            System.out.println("PIN Correct.");
-        } else {
-            System.out.println("Invalid PIN.");
-        }
-
-        System.out.println();
-
-        System.out.println(customer.getFirstName());
-        System.out.println(customer.getAccount().getAccountNumber());
-        System.out.println(customer.getAccount().getBalance());
-        System.out.println(customer.getAccount().getAccountType());
-
         CustomerService customerService = new CustomerService();
-        customerService.displayMenu(customer);
+        if (customerService.authenticate(customer)) {
 
+            customerService.displayMenu(customer);
+
+        }
     }
 
 }

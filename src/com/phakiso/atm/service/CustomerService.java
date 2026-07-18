@@ -7,6 +7,40 @@ public class CustomerService {
 
     private Scanner scanner = new Scanner(System.in);
 
+    public boolean authenticate(Customer customer) {
+
+        int attempts = 3;
+
+        while (attempts > 0) {
+
+            System.out.print("Enter PIN: ");
+
+            String enteredPin = scanner.next();
+
+            if (customer.getAccount().validatePin(enteredPin)) {
+
+                System.out.println();
+                System.out.println("Access Granted.");
+                return true;
+
+            }
+
+            attempts--;
+
+            System.out.println("Incorrect PIN.");
+
+            if (attempts > 0) {
+                System.out.println("Attempts Remaining : " + attempts);
+            }
+
+            System.out.println();
+
+        }
+
+        System.out.println("Card Blocked.");
+        return false;
+    }
+
     public void displayCustomer(Customer customer) {
 
         System.out.println("--------------------------------");
@@ -28,49 +62,55 @@ public class CustomerService {
     }
     public void displayMenu(Customer customer) {
 
-        System.out.println();
-        System.out.println("==============================");
-        System.out.println(" Enterprise Banking ATM");
-        System.out.println("==============================");
-        System.out.println("1. Check Balance");
-        System.out.println("2. Deposit");
-        System.out.println("3. Withdraw");
-        System.out.println("4. Exit");
-        System.out.println("==============================");
+        boolean running = true;
 
-        System.out.print("Choose option: ");
+        while (running) {
 
-        int option = scanner.nextInt();
+            System.out.println();
+            System.out.println("==============================");
+            System.out.println(" Enterprise Banking ATM");
+            System.out.println("==============================");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Exit");
+            System.out.println("==============================");
 
-        System.out.println();
-        switch (option) {
+            System.out.print("Choose option: ");
 
-            case 1:
-                System.out.println("Current Balance : R" + customer.getAccount().getBalance());
-                break;
+            int option = scanner.nextInt();
 
-            case 2:
-                System.out.print("Enter deposit amount: R");
-                double depositAmount = scanner.nextDouble();
+            switch (option) {
 
-                customer.getAccount().deposit(depositAmount);
-                break;
+                case 1:
+                    System.out.println();
+                    System.out.println("Current Balance : R"
+                            + customer.getAccount().getBalance());
+                    break;
 
-            case 3:
-                System.out.print("Enter withdrawal amount: R");
-                double withdrawalAmount = scanner.nextDouble();
+                case 2:
+                    System.out.print("Enter deposit amount: R");
+                    double depositAmount = scanner.nextDouble();
 
-                customer.getAccount().withdraw(withdrawalAmount);
-                break;
+                    customer.getAccount().deposit(depositAmount);
+                    break;
 
-            case 4:
-                System.out.println("Thank you for using Enterprise Banking ATM.");
-                break;
+                case 3:
+                    System.out.print("Enter withdrawal amount: R");
+                    double withdrawalAmount = scanner.nextDouble();
 
-            default:
-                System.out.println("Invalid option.");
+                    customer.getAccount().withdraw(withdrawalAmount);
+                    break;
+
+                case 4:
+                    System.out.println();
+                    System.out.println("Thank you for using Enterprise Banking ATM.");
+                    running = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid option.");
+            }
+
         }
-
-
-    }
-}
+    }}
