@@ -16,6 +16,13 @@ public class Main {
                 "1234"
         );
 
+        BankAccount chequeAccount =
+                new BankAccount(
+                        100002,
+                        "Cheque",
+                        5000,
+                        "1234");
+
         Customer customer = new Customer(
                 1,
                 "Phakiso",
@@ -34,4 +41,4 @@ public class Main {
         }
     }
 
-}1234
+}

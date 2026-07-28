@@ -77,7 +77,8 @@ public class CustomerService {
             System.out.println("2. Deposit");
             System.out.println("3. Withdraw");
             System.out.println("4. Mini Statement");
-            System.out.println("5. Exit");
+            System.out.println("5. Change PIN");
+            System.out.println("6. Exit");
             System.out.println("==============================");
 
             System.out.print("Choose option: ");
@@ -109,13 +110,14 @@ public class CustomerService {
                     break;
 
                 case 5:
+                    changePin(customer);
+                    break;
+
+                case 6:
                     System.out.println();
                     System.out.println("Thank you for using Enterprise Banking ATM.");
                     running = false;
                     break;
-
-                default:
-                    System.out.println("Invalid option.");
             }
         }
     }
@@ -147,4 +149,31 @@ public class CustomerService {
         System.out.println("Current Balance : R" + account.getBalance());
         System.out.println("==============================");
     }
+
+    public void changePin(Customer customer) {
+
+        System.out.print("Enter current PIN: ");
+        String currentPin = scanner.next();
+
+        if (!customer.getAccount().validatePin(currentPin)) {
+            System.out.println("Incorrect current PIN.");
+            return;
+        }
+
+        System.out.print("Enter new PIN: ");
+        String newPin = scanner.next();
+
+        System.out.print("Confirm new PIN: ");
+        String confirmPin = scanner.next();
+
+        if (!newPin.equals(confirmPin)) {
+            System.out.println("PINs do not match.");
+            return;
+        }
+
+        customer.getAccount().setPin(newPin);
+
+        System.out.println("PIN changed successfully.");
+    }
+
 }

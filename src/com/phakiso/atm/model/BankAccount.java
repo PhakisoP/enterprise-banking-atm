@@ -39,6 +39,10 @@ public class BankAccount {
         return pin;
     }
 
+    public void setPin(String pin) {
+        this.pin = pin;
+    }
+
     public void deposit(double amount) {
 
         if (amount <= 0) {
