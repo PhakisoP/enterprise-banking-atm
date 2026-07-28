@@ -2,6 +2,8 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
 import java.util.Scanner;
+import com.phakiso.atm.model.BankAccount;
+import com.phakiso.atm.model.Transaction;
 
 public class CustomerService {
 
@@ -60,6 +62,7 @@ public class CustomerService {
                 customer.getAccount().getBalance());
 
     }
+
     public void displayMenu(Customer customer) {
 
         boolean running = true;
@@ -73,7 +76,8 @@ public class CustomerService {
             System.out.println("1. Check Balance");
             System.out.println("2. Deposit");
             System.out.println("3. Withdraw");
-            System.out.println("4. Exit");
+            System.out.println("4. Mini Statement");
+            System.out.println("5. Exit");
             System.out.println("==============================");
 
             System.out.print("Choose option: ");
@@ -91,18 +95,20 @@ public class CustomerService {
                 case 2:
                     System.out.print("Enter deposit amount: R");
                     double depositAmount = scanner.nextDouble();
-
                     customer.getAccount().deposit(depositAmount);
                     break;
 
                 case 3:
                     System.out.print("Enter withdrawal amount: R");
                     double withdrawalAmount = scanner.nextDouble();
-
                     customer.getAccount().withdraw(withdrawalAmount);
                     break;
 
                 case 4:
+                    displayMiniStatement(customer.getAccount());
+                    break;
+
+                case 5:
                     System.out.println();
                     System.out.println("Thank you for using Enterprise Banking ATM.");
                     running = false;
@@ -111,6 +117,34 @@ public class CustomerService {
                 default:
                     System.out.println("Invalid option.");
             }
-
         }
-    }}
+    }
+    public void displayMiniStatement(BankAccount account) {
+
+        System.out.println();
+        System.out.println("==============================");
+        System.out.println("      MINI STATEMENT");
+        System.out.println("==============================");
+
+        if (account.getTransactions().isEmpty()) {
+
+            System.out.println("No transactions found.");
+
+        } else {
+
+            for (Transaction transaction : account.getTransactions()) {
+
+                System.out.printf(
+                        "%-20s %-15s R%.2f%n",
+                        transaction.getTransactionDate(),
+                        transaction.getType(),
+                        transaction.getAmount()
+                );
+            }
+        }
+
+        System.out.println("------------------------------");
+        System.out.println("Current Balance : R" + account.getBalance());
+        System.out.println("==============================");
+    }
+}

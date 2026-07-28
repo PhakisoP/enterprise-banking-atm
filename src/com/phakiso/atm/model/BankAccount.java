@@ -1,11 +1,16 @@
 package com.phakiso.atm.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BankAccount {
 
     private int accountNumber;
     private String accountType;
     private double balance;
     private String pin;
+
+    private List<Transaction> transactions = new ArrayList<>();
 
     public BankAccount(int accountNumber,
                        String accountType,
@@ -43,12 +48,15 @@ public class BankAccount {
 
         balance += amount;
 
+        transactions.add(new Transaction("Deposit", amount));
+
         System.out.println("Deposit Successful!");
         System.out.println("Amount Deposited : R" + amount);
         System.out.println("New Balance      : R" + balance);
-    }
-    public void withdraw(double amount) {
 
+    }
+
+    public void withdraw(double amount) {
         if (amount <= 0) {
             System.out.println("Withdrawal amount must be greater than zero.");
             return;
@@ -61,6 +69,8 @@ public class BankAccount {
 
         balance -= amount;
 
+        transactions.add(new Transaction("Withdrawal", amount));
+
         System.out.println("Withdrawal Successful!");
         System.out.println("Amount Withdrawn : R" + amount);
         System.out.println("New Balance      : R" + balance);
@@ -69,5 +79,8 @@ public class BankAccount {
 
         return pin.equals(enteredPin);
 
+    }
+    public List<Transaction> getTransactions() {
+        return transactions;
     }
 }
