@@ -2,12 +2,41 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
 import java.util.Scanner;
+import com.phakiso.atm.repository.CustomerRepository;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Transaction;
 
 public class CustomerService {
 
+    public Customer login(CustomerRepository repository) {
+
+        System.out.print("Enter Account Number: ");
+
+        int accountNumber = scanner.nextInt();
+
+        Customer customer =
+                repository.findCustomerByAccountNumber(accountNumber);
+
+        if (customer == null) {
+
+            System.out.println();
+            System.out.println("Account not found.");
+
+            return null;
+        }
+
+        if (authenticate(customer)) {
+
+            return customer;
+
+        }
+
+        return null;
+    }
+
     private Scanner scanner = new Scanner(System.in);
+    ATMService atmService = new ATMService();
+
 
     public boolean authenticate(Customer customer) {
 
@@ -63,7 +92,8 @@ public class CustomerService {
 
     }
 
-    public void displayMenu(Customer customer) {
+    public void displayMenu(Customer customer,
+                            CustomerRepository repository) {
 
         boolean running = true;
 
@@ -78,7 +108,8 @@ public class CustomerService {
             System.out.println("3. Withdraw");
             System.out.println("4. Mini Statement");
             System.out.println("5. Change PIN");
-            System.out.println("6. Exit");
+            System.out.println("6. Transfer Money");
+            System.out.println("7. Exit");
             System.out.println("==============================");
 
             System.out.print("Choose option: ");
@@ -88,92 +119,54 @@ public class CustomerService {
             switch (option) {
 
                 case 1:
-                    System.out.println();
-                    System.out.println("Current Balance : R"
-                            + customer.getAccount().getBalance());
+                    atmService.checkBalance(customer);
                     break;
 
                 case 2:
                     System.out.print("Enter deposit amount: R");
                     double depositAmount = scanner.nextDouble();
-                    customer.getAccount().deposit(depositAmount);
+                    atmService.deposit(customer, depositAmount);
                     break;
 
                 case 3:
                     System.out.print("Enter withdrawal amount: R");
                     double withdrawalAmount = scanner.nextDouble();
-                    customer.getAccount().withdraw(withdrawalAmount);
+                    atmService.withdraw(customer, withdrawalAmount);
                     break;
 
                 case 4:
-                    displayMiniStatement(customer.getAccount());
+                    atmService.displayMiniStatement(customer);
                     break;
 
                 case 5:
-                    changePin(customer);
+                    atmService.changePin(customer, scanner);
                     break;
 
                 case 6:
+
+                    System.out.print("Recipient Account Number: ");
+                    int accountNumber = scanner.nextInt();
+
+                    System.out.print("Amount: R");
+                    double amount = scanner.nextDouble();
+
+                    atmService.transferMoney(
+                            customer,
+                            repository,
+                            accountNumber,
+                            amount
+                    );
+                    break;
+
+                case 7:
                     System.out.println();
                     System.out.println("Thank you for using Enterprise Banking ATM.");
                     running = false;
                     break;
+
+                default:
+                    System.out.println("Invalid option.");
             }
         }
     }
-    public void displayMiniStatement(BankAccount account) {
-
-        System.out.println();
-        System.out.println("==============================");
-        System.out.println("      MINI STATEMENT");
-        System.out.println("==============================");
-
-        if (account.getTransactions().isEmpty()) {
-
-            System.out.println("No transactions found.");
-
-        } else {
-
-            for (Transaction transaction : account.getTransactions()) {
-
-                System.out.printf(
-                        "%-20s %-15s R%.2f%n",
-                        transaction.getTransactionDate(),
-                        transaction.getType(),
-                        transaction.getAmount()
-                );
-            }
-        }
-
-        System.out.println("------------------------------");
-        System.out.println("Current Balance : R" + account.getBalance());
-        System.out.println("==============================");
-    }
-
-    public void changePin(Customer customer) {
-
-        System.out.print("Enter current PIN: ");
-        String currentPin = scanner.next();
-
-        if (!customer.getAccount().validatePin(currentPin)) {
-            System.out.println("Incorrect current PIN.");
-            return;
-        }
-
-        System.out.print("Enter new PIN: ");
-        String newPin = scanner.next();
-
-        System.out.print("Confirm new PIN: ");
-        String confirmPin = scanner.next();
-
-        if (!newPin.equals(confirmPin)) {
-            System.out.println("PINs do not match.");
-            return;
-        }
-
-        customer.getAccount().setPin(newPin);
-
-        System.out.println("PIN changed successfully.");
-    }
-
 }

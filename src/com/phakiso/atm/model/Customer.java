@@ -1,5 +1,5 @@
 package com.phakiso.atm.model;
-
+import java.util.Scanner;
 public class Customer {
 
     private int customerId;
