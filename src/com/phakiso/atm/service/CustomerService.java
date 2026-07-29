@@ -109,7 +109,8 @@ public class CustomerService {
             System.out.println("4. Mini Statement");
             System.out.println("5. Change PIN");
             System.out.println("6. Transfer Money");
-            System.out.println("7. Exit");
+            System.out.println("7. Logout");
+            System.out.println("8. Exit ATM");
             System.out.println("==============================");
 
             System.out.print("Choose option: ");
@@ -159,13 +160,17 @@ public class CustomerService {
                     break;
 
                 case 7:
+
                     System.out.println();
-                    System.out.println("Thank you for using Enterprise Banking ATM.");
+                    System.out.println("Logging out...");
                     running = false;
                     break;
 
-                default:
-                    System.out.println("Invalid option.");
+                case 8:
+
+                    System.out.println();
+                    System.out.println("Shutting down ATM...");
+                    System.exit(0);
             }
         }
     }

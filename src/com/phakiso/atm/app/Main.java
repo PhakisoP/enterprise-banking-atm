@@ -51,27 +51,25 @@ public class Main {
 
         CustomerService customerService = new CustomerService();
 
-        Customer loggedInCustomer =
-                customerService.login(repository);
+        while (true) {
 
-        if (loggedInCustomer != null) {
+            Customer loggedInCustomer =
+                    customerService.login(repository);
 
-            customerService.displayMenu(
-                    loggedInCustomer,
-                    repository
-            );
+            if (loggedInCustomer != null) {
+
+                customerService.displayMenu(
+                        loggedInCustomer,
+                        repository
+                );
+
+            }
+
+            System.out.println();
+
+
+
+            }
         }
 
-        System.out.println();
-
-        for (Customer c : repository.getCustomers()) {
-
-            System.out.println(c.getCustomerId());
-            System.out.println(c.getFirstName());
-            System.out.println(c.getAccount().getAccountNumber());
-            System.out.println("----------------");
-
     }
-    }
-
-}
