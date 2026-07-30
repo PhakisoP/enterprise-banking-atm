@@ -2,6 +2,7 @@ package com.phakiso.atm.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.phakiso.atm.service.TransactionService;
 
 public class BankAccount {
 

@@ -1,6 +1,7 @@
 package com.phakiso.atm.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import com.phakiso.atm.service.TransactionService;
 
 public class Transaction {
     private LocalDateTime transactionDate;

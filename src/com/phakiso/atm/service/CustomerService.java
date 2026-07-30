@@ -1,5 +1,6 @@
 package com.phakiso.atm.service;
 
+import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.model.Customer;
 import java.util.Scanner;
 import com.phakiso.atm.repository.CustomerRepository;
@@ -36,6 +37,7 @@ public class CustomerService {
 
     private Scanner scanner = new Scanner(System.in);
     ATMService atmService = new ATMService();
+    TransactionService transactionService = new TransactionService();
 
 
     public boolean authenticate(Customer customer) {
@@ -126,17 +128,17 @@ public class CustomerService {
                 case 2:
                     System.out.print("Enter deposit amount: R");
                     double depositAmount = scanner.nextDouble();
-                    atmService.deposit(customer, depositAmount);
+                    transactionService.deposit(customer, depositAmount);
                     break;
 
                 case 3:
                     System.out.print("Enter withdrawal amount: R");
                     double withdrawalAmount = scanner.nextDouble();
-                    atmService.withdraw(customer, withdrawalAmount);
+                    transactionService.withdraw(customer, withdrawalAmount);
                     break;
 
                 case 4:
-                    atmService.displayMiniStatement(customer);
+                    transactionService.displayMiniStatement(customer);
                     break;
 
                 case 5:
@@ -151,7 +153,7 @@ public class CustomerService {
                     System.out.print("Amount: R");
                     double amount = scanner.nextDouble();
 
-                    atmService.transferMoney(
+                    transactionService.transferMoney(
                             customer,
                             repository,
                             accountNumber,

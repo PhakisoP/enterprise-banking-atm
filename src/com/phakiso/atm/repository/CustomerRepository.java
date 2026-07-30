@@ -1,5 +1,6 @@
 package com.phakiso.atm.repository;
 
+import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.model.Customer;
 import java.util.ArrayList;
 import java.util.List;
