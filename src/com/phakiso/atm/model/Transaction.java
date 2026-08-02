@@ -4,9 +4,9 @@ import java.time.format.DateTimeFormatter;
 import com.phakiso.atm.service.TransactionService;
 
 public class Transaction {
-    private LocalDateTime transactionDate;
-    private String type;
-    private double amount;
+    private final LocalDateTime transactionDate;
+    private final String type;
+    private final double amount;
 
     public Transaction(String type, double amount) {
         this.type = type;

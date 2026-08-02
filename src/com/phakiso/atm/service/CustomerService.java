@@ -1,11 +1,9 @@
 package com.phakiso.atm.service;
 
-import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.model.Customer;
-import java.util.Scanner;
 import com.phakiso.atm.repository.CustomerRepository;
-import com.phakiso.atm.model.BankAccount;
-import com.phakiso.atm.model.Transaction;
+
+import java.util.Scanner;
 
 public class CustomerService {
 
@@ -173,6 +171,8 @@ public class CustomerService {
                     System.out.println();
                     System.out.println("Shutting down ATM...");
                     System.exit(0);
+
+
             }
         }
     }
