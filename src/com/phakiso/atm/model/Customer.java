@@ -1,6 +1,9 @@
 package com.phakiso.atm.model;
-import java.util.Scanner;
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int customerId;
     private String firstName;

@@ -4,13 +4,17 @@ import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerRepository;
 import com.phakiso.atm.service.AdminService;
+import com.phakiso.atm.service.PersistenceService;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // Create the repository
-        CustomerRepository repository = new CustomerRepository();
+        PersistenceService persistenceService =
+                new PersistenceService();
+
+        CustomerRepository repository =
+                persistenceService.load();
 
         // -------------------------
         // Sample Customer 1

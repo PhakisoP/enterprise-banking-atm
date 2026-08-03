@@ -9,6 +9,9 @@ public class AdminService {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    private final PersistenceService persistenceService =
+            new PersistenceService();
+
     public void createCustomer(CustomerRepository repository) {
             System.out.println("================================");
             System.out.println("    Create New Customer");
@@ -62,6 +65,7 @@ public class AdminService {
         );
 
         repository.addCustomer(customer);
+        persistenceService.save(repository);
 
         System.out.println();
         System.out.println("Customer created successfully!");

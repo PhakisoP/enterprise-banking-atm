@@ -1,9 +1,12 @@
 package com.phakiso.atm.model;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import com.phakiso.atm.service.TransactionService;
 
-public class Transaction {
+public class Transaction implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private final LocalDateTime transactionDate;
     private final String type;
     private final double amount;

@@ -4,8 +4,12 @@ import com.phakiso.atm.model.Customer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
-public class CustomerRepository {
+public class CustomerRepository implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
 
     private List<Customer> customers = new ArrayList<>();
 

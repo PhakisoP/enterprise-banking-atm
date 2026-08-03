@@ -1,10 +1,12 @@
 package com.phakiso.atm.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import com.phakiso.atm.service.TransactionService;
 
-public class BankAccount {
+public class BankAccount implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int accountNumber;
     private String accountType;
