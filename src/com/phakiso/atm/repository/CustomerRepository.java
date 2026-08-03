@@ -1,7 +1,7 @@
 package com.phakiso.atm.repository;
 
-import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.model.Customer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,5 +55,20 @@ public class CustomerRepository {
         }
 
         return null;
+
+    }
+    public boolean deleteCustomer(int accountNumber) {
+
+        Customer customer =
+                findCustomerByAccountNumber(accountNumber);
+
+        if (customer != null) {
+
+            customers.remove(customer);
+
+            return true;
+        }
+
+        return false;
     }
 }

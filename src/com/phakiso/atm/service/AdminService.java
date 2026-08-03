@@ -3,7 +3,6 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerRepository;
-
 import java.util.Scanner;
 
 public class AdminService {
@@ -71,6 +70,80 @@ public class AdminService {
 
 
     }
+
+    public void findCustomer(CustomerRepository repository) {
+
+        System.out.println("================================");
+        System.out.println("       FIND CUSTOMER");
+        System.out.println("================================");
+
+        System.out.print("Enter Account Number: ");
+        int accountNumber = scanner.nextInt();
+
+        Customer customer =
+                repository.findCustomerByAccountNumber(accountNumber);
+
+        if (customer == null) {
+
+            System.out.println();
+            System.out.println("Customer not found.");
+            return;
+        }
+
+
+
+        System.out.println();
+        System.out.println("================================");
+        System.out.println("     CUSTOMER DETAILS");
+        System.out.println("================================");
+
+        System.out.println("Customer ID : " + customer.getCustomerId());
+
+        System.out.println("Name        : "
+                + customer.getFirstName()
+                + " "
+                + customer.getLastName());
+
+        System.out.println("ID Number   : "
+                + customer.getIdNumber());
+
+        System.out.println("Phone       : "
+                + customer.getPhoneNumber());
+
+        System.out.println("Email       : "
+                + customer.getEmail());
+
+        System.out.println();
+
+        System.out.println("Account Number : "
+                + customer.getAccount().getAccountNumber());
+
+        System.out.println("Account Type   : "
+                + customer.getAccount().getAccountType());
+
+        System.out.println("Balance        : R"
+                + customer.getAccount().getBalance());
+    }
+
+    public void deleteCustomer(CustomerRepository repository) {
+
+        System.out.println("================================");
+        System.out.println("      DELETE CUSTOMER");
+        System.out.println("================================");
+
+        System.out.print("Enter Account Number: ");
+        int accountNumber = scanner.nextInt();
+
+        boolean deleted = repository.deleteCustomer(accountNumber);
+
+        System.out.println();
+
+        if (deleted) {
+            System.out.println("Customer deleted successfully.");
+        } else {
+            System.out.println("Customer not found.");
+        }
+    }
     public void viewAllCustomers(CustomerRepository repository) {
 
         System.out.println();
@@ -125,17 +198,38 @@ public class AdminService {
                     viewAllCustomers(repository);
                     break;
 
-                        case 3:
-                            System.out.println("Find Customers selected");
+                case 3:
+                    findCustomer(repository);
+                    break;
+
+                case 4:
+                    deleteCustomer(repository);
+                    break;
+
+                case 5:
+
+                    CustomerService customerService = new CustomerService();
+
+                    while (true) {
+
+                        Customer loggedInCustomer =
+                                customerService.login(repository);
+
+                        if (loggedInCustomer != null) {
+
+                            customerService.displayMenu(
+                                    loggedInCustomer,
+                                    repository
+                            );
+
                             break;
+                        }
 
-                            case 4:
-                                System.out.println("Delete Customer selected");
-                                break;
+                        System.out.println();
+                        System.out.println("Please try again.");
+                    }
 
-                                case 5:
-                                    System.out.println("Launch ATM selected");
-                                    break;
+                    break;
 
                                     case 6:
                                         System.out.println("Exiting Admin System...");
