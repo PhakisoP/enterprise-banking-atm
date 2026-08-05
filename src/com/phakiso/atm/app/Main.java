@@ -13,54 +13,59 @@ public class Main {
         PersistenceService persistenceService =
                 new PersistenceService();
 
-        CustomerRepository repository =
-                persistenceService.load();
+        CustomerRepository repository = persistenceService.load();
 
-        // -------------------------
-        // Sample Customer 1
-        // -------------------------
-        BankAccount account1 = new BankAccount(
-                100001,
-                "Savings",
-                15000,
-                "1234"
-        );
+        if (repository.getCustomers().isEmpty()) {
 
-        Customer customer1 = new Customer(
-                1,
-                "Phakiso",
-                "Pitso",
-                "9001015009088",
-                "0812345678",
-                "phakiso@email.com",
-                account1
-        );
+            System.out.println("Creating default customers...");
 
-        // -------------------------
-        // Sample Customer 2
-        // -------------------------
-        BankAccount account2 = new BankAccount(
-                100002,
-                "Savings",
-                9500,
-                "5678"
-        );
+            // -------------------------
+            // Sample Customer 1
+            // -------------------------
+            BankAccount account1 = new BankAccount(
+                    100001,
+                    "Savings",
+                    15000,
+                    "1234"
+            );
 
-        Customer customer2 = new Customer(
-                2,
-                "Sarah",
-                "Johnson",
-                "9202025009088",
-                "0823456789",
-                "sarah@email.com",
-                account2
-        );
+            Customer customer1 = new Customer(
+                    1,
+                    "Phakiso",
+                    "Pitso",
+                    "9001015009088",
+                    "0812345678",
+                    "phakiso@email.com",
+                    account1
+            );
 
-        // Save the sample customers
-        repository.addCustomer(customer1);
-        repository.addCustomer(customer2);
+            // -------------------------
+            // Sample Customer 2
+            // -------------------------
+            BankAccount account2 = new BankAccount(
+                    100002,
+                    "Savings",
+                    9500,
+                    "5678"
+            );
 
-        // Start the Admin System
+            Customer customer2 = new Customer(
+                    2,
+                    "Sarah",
+                    "Johnson",
+                    "9202025009088",
+                    "0823456789",
+                    "sarah@email.com",
+                    account2
+            );
+
+            repository.addCustomer(customer1);
+            repository.addCustomer(customer2);
+
+            persistenceService.save(repository);
+        }
+
+// Start the Admin System
         AdminService adminService = new AdminService();
         adminService.displayAdminMenu(repository);
     }

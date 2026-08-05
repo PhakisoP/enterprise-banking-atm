@@ -3,6 +3,7 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerRepository;
+
 import java.util.Scanner;
 
 public class AdminService {
@@ -18,31 +19,64 @@ public class AdminService {
             System.out.println("================================");
 
             System.out.print("Enter Customer ID: ");
-    int customerID = scanner.nextInt();
+        int customerID = scanner.nextInt();
+        if (repository.customerIDExists(customerID)) {
+            System.out.println();
+            System.out.println("Customer ID already exists!");
+            return;
+    }
 
-                    System.out.print("Enter First Name: ");
-                    String firstName = scanner.next();
-
-                    System.out.print("Enter Last Name: ");
-    String lastName = scanner.next();
 
                     System.out.print("Enter ID number: ");
     String idNumber = scanner.next();
+        if (repository.idNumberExists(idNumber)) {
+            System.out.println();
+            System.out.println("A customer with this ID already exists!");
+            return;
+    }
+
 
                     System.out.print("Enter Phone Number: ");
     String phoneNumber = scanner.next();
+    if (repository.phoneNumberExists(phoneNumber)) {
+        System.out.println();
+        System.out.println("This phone number is already linked to another customer!");
+        return;
+    }
 
                     System.out.print("Enter Email: ");
     String email = scanner.next();
+    if (repository.emailExists(email)) {
+        System.out.println();
+        System.out.println("This email is already linked to another customer!");
+        return;
+    }
 
                     System.out.print("Enter Account Number: ");
     int accountNumber = scanner.nextInt();
+    if (repository.accountNumberExists(accountNumber)) {
+        System.out.println();
+        System.out.println("An account with this account number already exists!");
+        return;
+    }
+
+        System.out.print("Enter First Name: ");
+        String firstName = scanner.next();
+
+        System.out.print("Enter Last Name: ");
+        String lastName = scanner.next();
 
                     System.out.print("Enter Account type: ");
     String accountType = scanner.next();
 
+
                     System.out.print("Enter Opening Balance: ");
         double openingBalance = scanner.nextDouble();
+        if (openingBalance < 0) {
+            System.out.println();
+            System.out.println("Opening Balance cannot be negative!");
+            return;
+        }
 
         System.out.print("Enter Pin: ");
     String pin = scanner.next();
@@ -148,6 +182,8 @@ public class AdminService {
             System.out.println("Customer not found.");
         }
     }
+
+
     public void viewAllCustomers(CustomerRepository repository) {
 
         System.out.println();

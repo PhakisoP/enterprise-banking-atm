@@ -21,22 +21,19 @@ public class CustomerRepository implements Serializable {
         return customers;
     }
 
+
     public Customer findCustomerById(int customerId) {
-
         for (Customer customer : customers) {
-
             if (customer.getCustomerId() == customerId) {
                 return customer;
             }
-
         }
-
         return null;
     }
+
+
     public Customer findCustomerByAccountNumber(int accountNumber) {
-
         for (Customer customer : customers) {
-
             if (customer.getAccount().getAccountNumber() == accountNumber) {
                 return customer;
             }
@@ -45,34 +42,75 @@ public class CustomerRepository implements Serializable {
 
         return null;
     }
+
+    public boolean idNumberExists(String idNumber){
+        for (Customer customer : customers) {
+            if (customer.getIdNumber().equals(idNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Customer findCustomerByAccountNumberExcludingSender(
             int accountNumber,
             Customer sender) {
-
         for (Customer customer : customers) {
-
             if (customer.getAccount().getAccountNumber() == accountNumber
                     && customer != sender) {
-
                 return customer;
             }
         }
-
         return null;
 
     }
-    public boolean deleteCustomer(int accountNumber) {
 
+    public boolean deleteCustomer(int accountNumber) {
         Customer customer =
                 findCustomerByAccountNumber(accountNumber);
-
         if (customer != null) {
-
             customers.remove(customer);
-
             return true;
         }
+        return false;
+    }
 
+
+    public boolean accountNumberExists(int accountNumber) {
+        for (Customer customer : customers) {
+            if (customer.getAccount().getAccountNumber() == accountNumber) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean customerIDExists(int customerID) {
+        for (Customer customer : customers) {
+            if (customer.getCustomerId() == customerID) {
+                return true;
+            }
+        }
+        return false;
+            }
+
+
+    public boolean phoneNumberExists(String phoneNumber) {
+        for (Customer customer : customers) {
+            if (customer.getPhoneNumber().equals(phoneNumber)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean emailExists(String email) {
+        for (Customer customer : customers) {
+            if (customer.getEmail().equalsIgnoreCase(email)) {
+                return true;
+            }
+        }
         return false;
     }
 }
