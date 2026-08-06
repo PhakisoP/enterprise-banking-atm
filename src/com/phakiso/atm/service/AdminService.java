@@ -10,6 +10,9 @@ public class AdminService {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    private final ValidationService validationService =
+            new ValidationService();
+
     private final PersistenceService persistenceService =
             new PersistenceService();
 
@@ -27,59 +30,69 @@ public class AdminService {
     }
 
 
-                    System.out.print("Enter ID number: ");
-    String idNumber = scanner.next();
-        if (repository.idNumberExists(idNumber)) {
-            System.out.println();
-            System.out.println("A customer with this ID already exists!");
+        System.out.print("Enter ID number: ");
+        String idNumber = scanner.next();
+
+        if (!validationService.validateIdNumber(idNumber, repository)) {
             return;
-    }
+        }
+        if (!validationService.isValidIdNumber(idNumber)) {
+            return;
+        }
 
 
                     System.out.print("Enter Phone Number: ");
     String phoneNumber = scanner.next();
-    if (repository.phoneNumberExists(phoneNumber)) {
-        System.out.println();
-        System.out.println("This phone number is already linked to another customer!");
-        return;
-    }
+        if (!validationService.validatePhoneNumber(phoneNumber, repository)) {
+            return;
+        }
 
                     System.out.print("Enter Email: ");
     String email = scanner.next();
-    if (repository.emailExists(email)) {
-        System.out.println();
-        System.out.println("This email is already linked to another customer!");
-        return;
-    }
+        if (!validationService.validateEmail(email, repository)) {
+            return;
+        }
 
                     System.out.print("Enter Account Number: ");
     int accountNumber = scanner.nextInt();
-    if (repository.accountNumberExists(accountNumber)) {
-        System.out.println();
-        System.out.println("An account with this account number already exists!");
-        return;
-    }
+        if (!validationService.validateAccountNumber(accountNumber, repository)) {
+            return;
+        }
 
         System.out.print("Enter First Name: ");
         String firstName = scanner.next();
+        if (!validationService.isValidName(firstName)) {
+            System.out.println();
+            System.out.println("First Name is invalid!");
+            return;
+        }
 
         System.out.print("Enter Last Name: ");
         String lastName = scanner.next();
+        if (!validationService.isValidName(lastName)) {
+            System.out.println();
+            System.out.println("Last Name is invalid!");
+            return;
+        }
 
                     System.out.print("Enter Account type: ");
     String accountType = scanner.next();
+        if (!validationService.isValidAccountType(accountType)) {
+            return;
+        }
 
 
                     System.out.print("Enter Opening Balance: ");
         double openingBalance = scanner.nextDouble();
-        if (openingBalance < 0) {
-            System.out.println();
-            System.out.println("Opening Balance cannot be negative!");
+        if (!validationService.validateOpeningBalance(openingBalance)) {
             return;
         }
 
         System.out.print("Enter Pin: ");
     String pin = scanner.next();
+        if (!validationService.isValidPin(pin)) {
+            return;
+        }
 
         BankAccount account = new BankAccount(
                 accountNumber,
