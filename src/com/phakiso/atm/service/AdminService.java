@@ -1,20 +1,16 @@
 package com.phakiso.atm.service;
 
-import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerRepository;
-
 import java.util.Scanner;
 
 public class AdminService {
 
     private final Scanner scanner = new Scanner(System.in);
-
     private final ValidationService validationService =
             new ValidationService();
-
-    private final PersistenceService persistenceService =
-            new PersistenceService();
+    private final BankService bankService =
+            new BankService();
 
     public void createCustomer(CustomerRepository repository) {
             System.out.println("================================");
@@ -23,11 +19,9 @@ public class AdminService {
 
             System.out.print("Enter Customer ID: ");
         int customerID = scanner.nextInt();
-        if (repository.customerIDExists(customerID)) {
-            System.out.println();
-            System.out.println("Customer ID already exists!");
+        if (!validationService.validateCustomerId(customerID, repository)) {
             return;
-    }
+        }
 
 
         System.out.print("Enter ID number: ");
@@ -94,30 +88,29 @@ public class AdminService {
             return;
         }
 
-        BankAccount account = new BankAccount(
-                accountNumber,
-                accountType,
-                openingBalance,
-                pin
-        );
-
-        Customer customer = new Customer(
+        Customer customer = bankService.createCustomer(
+                repository,
                 customerID,
                 firstName,
                 lastName,
                 idNumber,
                 phoneNumber,
                 email,
-                account
+                accountNumber,
+                accountType,
+                openingBalance,
+                pin
         );
-
-        repository.addCustomer(customer);
-        persistenceService.save(repository);
 
         System.out.println();
         System.out.println("Customer created successfully!");
-        System.out.println("Customer: " + firstName + " " + lastName);
-        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Customer: "
+                + customer.getFirstName()
+                + " "
+                + customer.getLastName());
+
+        System.out.println("Account Number: "
+                + customer.getAccount().getAccountNumber());
 
 
     }
@@ -243,6 +236,7 @@ public class AdminService {
 
             int option = scanner.nextInt();
             switch (option) {
+
                 case 1:
                     createCustomer(repository);
                     break;
@@ -284,15 +278,17 @@ public class AdminService {
 
                     break;
 
-                                    case 6:
-                                        System.out.println("Exiting Admin System...");
-                                        running = false;
-                                        break;
+                case 6:
+                    System.out.println("Exiting Admin System...");
+                    running = false;
+                    break;
 
-                                        default:
-                                            System.out.println("invalid option");
-
-
+                default:
+                    System.out.println();
+                    System.out.println(
+                            "Invalid option. Please choose between 1 and 6."
+                    );
+                    break;
             }
 
         }
