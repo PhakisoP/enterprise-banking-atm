@@ -17,9 +17,12 @@ public class AdminService {
             System.out.println("    Create New Customer");
             System.out.println("================================");
 
-            System.out.print("Enter Customer ID: ");
+        System.out.print("Enter Customer ID: ");
         int customerID = scanner.nextInt();
-        if (!validationService.validateCustomerId(customerID, repository)) {
+
+        if (!bankService.validateCustomerId(customerID, repository)) {
+            System.out.println();
+            System.out.println("Customer ID already exists!");
             return;
         }
 
@@ -125,7 +128,7 @@ public class AdminService {
         int accountNumber = scanner.nextInt();
 
         Customer customer =
-                repository.findCustomerByAccountNumber(accountNumber);
+                bankService.findCustomer(repository, accountNumber);
 
         if (customer == null) {
 
@@ -134,14 +137,13 @@ public class AdminService {
             return;
         }
 
-
-
         System.out.println();
         System.out.println("================================");
         System.out.println("     CUSTOMER DETAILS");
         System.out.println("================================");
 
-        System.out.println("Customer ID : " + customer.getCustomerId());
+        System.out.println("Customer ID : "
+                + customer.getCustomerId());
 
         System.out.println("Name        : "
                 + customer.getFirstName()
@@ -178,7 +180,8 @@ public class AdminService {
         System.out.print("Enter Account Number: ");
         int accountNumber = scanner.nextInt();
 
-        boolean deleted = repository.deleteCustomer(accountNumber);
+        boolean deleted =
+                bankService.deleteCustomer(repository, accountNumber);
 
         System.out.println();
 
@@ -197,9 +200,11 @@ public class AdminService {
         System.out.println("          ALL CUSTOMERS");
         System.out.println("========================================");
 
-        for (Customer customer : repository.getCustomers()) {
+        for (Customer customer : bankService.getAllCustomers(repository)) {
 
-            System.out.println("Customer ID    : " + customer.getCustomerId());
+            System.out.println("Customer ID    : "
+                    + customer.getCustomerId());
+
             System.out.println("Name           : "
                     + customer.getFirstName()
                     + " "
