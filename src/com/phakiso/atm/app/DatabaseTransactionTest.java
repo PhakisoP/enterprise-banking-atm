@@ -2,6 +2,9 @@ package com.phakiso.atm.app;
 
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.repository.TransactionDatabaseRepository;
+import com.phakiso.atm.util.DatabaseConnection;
+
+import java.sql.Connection;
 
 public class DatabaseTransactionTest {
 
@@ -25,16 +28,29 @@ public class DatabaseTransactionTest {
         System.out.println();
         System.out.println("Saving deposit transaction...");
 
-        // Simulate a deposit
         account.deposit(1000.00);
 
-        repository.saveTransaction(
-                account,
-                "Deposit",
-                1000.00
-        );
+        try (Connection connection =
+                     DatabaseConnection.getConnection()) {
 
-        System.out.println();
-        System.out.println("Test completed.");
+            repository.saveTransaction(
+                    connection,
+                    account,
+                    "Deposit",
+                    1000.00,
+                    account.getBalance()
+            );
+
+            System.out.println();
+            System.out.println("Test completed.");
+
+        } catch (Exception e) {
+
+            System.out.println(
+                    "Transaction database test failed."
+            );
+
+            e.printStackTrace();
+        }
     }
 }

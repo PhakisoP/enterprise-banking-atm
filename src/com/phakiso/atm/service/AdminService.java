@@ -1,6 +1,7 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
+import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
 import java.util.Scanner;
 
@@ -11,6 +12,8 @@ public class AdminService {
             new ValidationService();
     private final BankService bankService =
             new BankService();
+    private final AccountDatabaseRepository accountDatabaseRepository =
+            new AccountDatabaseRepository();
 
     public void createCustomer(CustomerRepository repository) {
             System.out.println("================================");
@@ -219,6 +222,42 @@ public class AdminService {
             System.out.println("----------------------------------------");
         }
     }
+    public void unlockAccount() {
+
+        System.out.println();
+        System.out.println("================================");
+        System.out.println("       UNLOCK ACCOUNT");
+        System.out.println("================================");
+
+        System.out.print("Enter Account Number: ");
+
+        int accountNumber =
+                scanner.nextInt();
+
+        boolean unlocked =
+                accountDatabaseRepository.unlockAccount(
+                        accountNumber
+                );
+
+        if (unlocked) {
+
+            System.out.println();
+            System.out.println(
+                    "Account unlocked successfully."
+            );
+
+            System.out.println(
+                    "Failed login attempts reset."
+            );
+
+        } else {
+
+            System.out.println();
+            System.out.println(
+                    "Account could not be unlocked."
+            );
+        }
+    }
 
     public void displayAdminMenu(CustomerRepository repository)  {
 
@@ -233,7 +272,8 @@ public class AdminService {
             System.out.println("3. Find Customer");
             System.out.println("4. Delete Customer");
             System.out.println("5. Launch ATM");
-            System.out.println("6. Exit");
+            System.out.println("6. Unlock Account");
+            System.out.println("7. Exit");
             System.out.println("================================");
 
             System.out.print("Choose Option: ");
@@ -265,7 +305,7 @@ public class AdminService {
                     while (true) {
 
                         Customer loggedInCustomer =
-                                customerService.login(repository);
+                                customerService.login();
 
                         if (loggedInCustomer != null) {
 
@@ -284,6 +324,11 @@ public class AdminService {
                     break;
 
                 case 6:
+
+                    unlockAccount();
+                    break;
+
+                case 7:
                     System.out.println("Exiting Admin System...");
                     running = false;
                     break;
@@ -291,13 +336,10 @@ public class AdminService {
                 default:
                     System.out.println();
                     System.out.println(
-                            "Invalid option. Please choose between 1 and 6."
+                            "Invalid option. Please choose between 1 and 7."
                     );
                     break;
             }
-
         }
-
     }
-
 }

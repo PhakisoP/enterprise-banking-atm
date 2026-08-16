@@ -2,6 +2,7 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.factory.CustomerFactory;
 import com.phakiso.atm.model.Customer;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
 import java.util.List;
 
@@ -11,6 +12,8 @@ public class BankService {
             new PersistenceService();
     private final CustomerFactory customerFactory =
             new CustomerFactory();
+    private final CustomerDatabaseRepository customerDatabaseRepository =
+            new CustomerDatabaseRepository();
 
 
     public List<Customer> getAllCustomers(

@@ -1,44 +1,47 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
+import com.phakiso.atm.repository.AccountDatabaseRepository;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
 
 import java.util.Scanner;
 
 public class CustomerService {
 
-    public Customer login(CustomerRepository repository) {
+    private final CustomerDatabaseRepository customerDatabaseRepository =
+            new CustomerDatabaseRepository();
+    private final ATMService atmService = new ATMService();
+    private final TransactionService transactionService = new TransactionService();
+    private final AccountDatabaseRepository accountDatabaseRepository =
+            new AccountDatabaseRepository();
 
-        System.out.print("Enter Account Number: ");
-
-        int accountNumber = scanner.nextInt();
-
-        Customer customer =
-                repository.findCustomerByAccountNumber(accountNumber);
-
-        if (customer == null) {
-
-            System.out.println();
-            System.out.println("Account not found.");
-
-            return null;
-        }
-
-        if (authenticate(customer)) {
-
-            return customer;
-
-        }
-
-        return null;
-    }
 
     private Scanner scanner = new Scanner(System.in);
-    ATMService atmService = new ATMService();
-    TransactionService transactionService = new TransactionService();
+
+
 
 
     public boolean authenticate(Customer customer) {
+
+        int accountNumber =
+                customer.getAccount().getAccountNumber();
+        if (accountDatabaseRepository.isAccountLocked(
+                accountNumber)) {
+            System.out.println();
+            System.out.println(
+                    "This account is locked."
+            );
+            System.out.println(
+                    "Please contact the bank."
+            );
+            return false;
+        }
+
+
+        // ==========================================
+        // PIN AUTHENTICATION
+        // ==========================================
 
         int attempts = 3;
 
@@ -46,31 +49,110 @@ public class CustomerService {
 
             System.out.print("Enter PIN: ");
 
-            String enteredPin = scanner.next();
+            String enteredPin =
+                    scanner.next();
 
-            if (customer.getAccount().validatePin(enteredPin)) {
+
+            // ======================================
+            // CORRECT PIN
+            // ======================================
+
+            if (customer.getAccount().validatePin(
+                    enteredPin)) {
+
+                accountDatabaseRepository.resetLoginAttempts(
+                        accountNumber
+                );
 
                 System.out.println();
-                System.out.println("Access Granted.");
-                return true;
+                System.out.println(
+                        "Access Granted."
+                );
 
+                return true;
             }
+
+
+            // ======================================
+            // INCORRECT PIN
+            // ======================================
 
             attempts--;
 
-            System.out.println("Incorrect PIN.");
+            int failedAttempts =
+                    3 - attempts;
 
-            if (attempts > 0) {
-                System.out.println("Attempts Remaining : " + attempts);
-            }
+            accountDatabaseRepository.updateFailedAttempts(
+                    accountNumber,
+                    failedAttempts
+            );
 
             System.out.println();
+            System.out.println(
+                    "Incorrect PIN."
+            );
 
+
+            // ======================================
+            // ATTEMPTS REMAINING
+            // ======================================
+
+            if (attempts > 0) {
+
+                System.out.println(
+                        "Attempts Remaining : "
+                                + attempts
+                );
+
+                System.out.println();
+
+            }
+
+
+            // ======================================
+            // LOCK ACCOUNT
+            // ======================================
+
+            else {
+
+                accountDatabaseRepository.lockAccount(
+                        accountNumber
+                );
+
+                System.out.println();
+                System.out.println(
+                        "Card Blocked."
+                );
+
+                System.out.println(
+                        "Please contact the bank."
+                );
+
+                return false;
+            }
         }
 
-        System.out.println("Card Blocked.");
         return false;
+
     }
+    public Customer login() {
+        System.out.print("Enter Account Number: ");
+        int accountNumber = scanner.nextInt();
+        Customer customer =
+                customerDatabaseRepository.findCustomerByAccountNumber(
+                        accountNumber
+                );
+        if (customer == null) {
+            System.out.println();
+            System.out.println("Account not found.");
+            return null;
+        }
+        if (authenticate(customer)) {
+            return customer;
+        }
+        return null;
+    }
+
 
     public void displayCustomer(Customer customer) {
 

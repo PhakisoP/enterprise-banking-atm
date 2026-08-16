@@ -153,10 +153,12 @@ public class CustomerDatabaseRepository {
                     c.first_name,
                     c.last_name,
 
-                    a.account_number,
-                    a.account_type,
-                    a.balance,
-                    a.pin
+                 a.account_number,
+                 a.account_type,
+                 a.balance,
+                 a.pin,
+                 a.failed_attempts,
+                 a.is_locked
 
                 FROM customers c
 
@@ -211,10 +213,12 @@ public class CustomerDatabaseRepository {
                     c.first_name,
                     c.last_name,
 
-                    a.account_number,
-                    a.account_type,
-                    a.balance,
-                    a.pin
+                  a.account_number,
+                  a.account_type,
+                  a.balance,
+                  a.pin,
+                  a.failed_attempts,
+                  a.is_locked
 
                 FROM customers c
 
@@ -253,6 +257,25 @@ public class CustomerDatabaseRepository {
         return null;
     }
 
+    public Customer findCustomerByAccountNumberExcludingSender(
+            int accountNumber,
+            Customer sender) {
+
+        Customer customer =
+                findCustomerByAccountNumber(accountNumber);
+
+        if (customer == null) {
+            return null;
+        }
+
+        if (customer.getCustomerId() ==
+                sender.getCustomerId()) {
+
+            return null;
+        }
+
+        return customer;
+    }
 
     // ============================================================
     // MAP DATABASE RESULT TO CUSTOMER OBJECT
@@ -270,6 +293,13 @@ public class CustomerDatabaseRepository {
                 resultSet.getDouble("balance"),
 
                 resultSet.getString("pin")
+        );
+        account.setFailedAttempts(
+                resultSet.getInt("failed_attempts")
+        );
+
+        account.setLocked(
+                resultSet.getBoolean("is_locked")
         );
 
         return new Customer(
@@ -289,4 +319,5 @@ public class CustomerDatabaseRepository {
                 account
         );
     }
+
 }

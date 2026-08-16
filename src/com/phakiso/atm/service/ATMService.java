@@ -2,6 +2,7 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
+import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
 
 import java.util.Scanner;
@@ -9,6 +10,8 @@ import java.util.Scanner;
 public class ATMService {
 
     private final TransactionService transactionService;
+    private final AccountDatabaseRepository accountDatabaseRepository =
+            new AccountDatabaseRepository();
 
     public ATMService() {
 
@@ -125,6 +128,14 @@ public class ATMService {
     // CHANGE PIN
     // ==========================================
 
+    // ==========================================
+// CHANGE PIN
+// ==========================================
+
+    // ==========================================
+// CHANGE PIN
+// ==========================================
+
     public void changePin(
             Customer customer,
             Scanner scanner) {
@@ -139,6 +150,10 @@ public class ATMService {
         String currentPin =
                 scanner.next();
 
+        // ==========================================
+        // VERIFY CURRENT PIN
+        // ==========================================
+
         if (!account.validatePin(currentPin)) {
 
             System.out.println(
@@ -148,12 +163,33 @@ public class ATMService {
             return;
         }
 
+        // ==========================================
+        // ENTER NEW PIN
+        // ==========================================
+
         System.out.print(
                 "Enter new PIN: "
         );
 
         String newPin =
                 scanner.next();
+
+        // ==========================================
+        // VALIDATE PIN FORMAT
+        // ==========================================
+
+        if (!newPin.matches("\\d{4}")) {
+
+            System.out.println(
+                    "PIN must contain exactly 4 digits."
+            );
+
+            return;
+        }
+
+        // ==========================================
+        // CONFIRM NEW PIN
+        // ==========================================
 
         System.out.print(
                 "Confirm new PIN: "
@@ -171,19 +207,62 @@ public class ATMService {
             return;
         }
 
-        if (!newPin.matches("\\d{4}")) {
+        // ==========================================
+        // UPDATE DATABASE
+        // ==========================================
+
+        boolean updated =
+                accountDatabaseRepository.updatePin(
+                        account.getAccountNumber(),
+                        newPin
+                );
+
+        if (!updated) {
+
+            System.out.println();
 
             System.out.println(
-                    "PIN must contain exactly 4 digits."
+                    "PIN change failed."
+            );
+
+            System.out.println(
+                    "Database was not updated."
             );
 
             return;
         }
 
+        // ==========================================
+        // UPDATE JAVA OBJECT
+        // ==========================================
+
         account.setPin(newPin);
 
+        System.out.println();
+
         System.out.println(
-                "PIN changed successfully."
+                "================================"
+        );
+
+        System.out.println(
+                "       PIN CHANGE SUCCESSFUL"
+        );
+
+        System.out.println(
+                "================================"
+        );
+
+        System.out.println(
+                "PIN updated successfully."
+        );
+
+        System.out.println(
+                "Your new PIN is now active."
+        );
+
+        System.out.println(
+                "================================"
         );
     }
-}
+    }
+

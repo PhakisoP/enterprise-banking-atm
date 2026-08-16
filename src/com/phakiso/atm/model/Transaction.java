@@ -15,8 +15,18 @@ public class Transaction implements Serializable {
         this.type = type;
         this.amount = amount;
         this.transactionDate = LocalDateTime.now();
-
     }
+
+    public Transaction(
+            String type,
+            double amount,
+            LocalDateTime transactionDate) {
+
+        this.type = type;
+        this.amount = amount;
+        this.transactionDate = transactionDate;
+    }
+
     public String getTransactionDate() {
 
         DateTimeFormatter formatter =
