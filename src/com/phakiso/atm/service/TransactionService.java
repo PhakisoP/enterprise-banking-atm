@@ -37,32 +37,20 @@ public class TransactionService {
             return;
         }
 
-        BankAccount account = customer.getAccount();
+        BankAccount account =
+                customer.getAccount();
 
         double newBalance =
                 account.getBalance() + amount;
+
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
 
             connection.setAutoCommit(false);
+
             try {
-                // Update database balance
 
-
-                boolean balanceUpdated =
-                        accountDatabaseRepository.updateBalance(
-                                connection,
-                                account.getAccountNumber(),
-                                newBalance
-                        );
-
-                if (!balanceUpdated) {
-                    throw new SQLException(
-                            "Account balance could not be updated."
-                    );
-                }
-
-                transactionDatabaseRepository.saveTransaction(
+                executeTransaction(
                         connection,
                         account,
                         "Deposit",
@@ -71,8 +59,9 @@ public class TransactionService {
                 );
 
                 connection.commit();
+
                 // Update Java object only after successful commit
-                account.deposit(amount);
+                account.increaseBalanceSilently(amount);
 
                 System.out.println(
                         "Deposit completed successfully."
@@ -99,6 +88,35 @@ public class TransactionService {
         }
     }
 
+    private void executeDepositTransaction(
+            Connection connection,
+            BankAccount account,
+            double amount,
+            double newBalance)
+            throws SQLException {
+
+        boolean balanceUpdated =
+                accountDatabaseRepository.updateBalance(
+                        connection,
+                        account.getAccountNumber(),
+                        newBalance
+                );
+
+        if (!balanceUpdated) {
+            throw new SQLException(
+                    "Account balance could not be updated."
+            );
+        }
+
+        transactionDatabaseRepository.saveTransaction(
+                connection,
+                account,
+                "Deposit",
+                amount,
+                newBalance
+        );
+    }
+
 
     // ==========================================
     // WITHDRAWAL
@@ -113,7 +131,8 @@ public class TransactionService {
             return;
         }
 
-        BankAccount account = customer.getAccount();
+        BankAccount account =
+                customer.getAccount();
 
         if (amount > account.getBalance()) {
             System.out.println(
@@ -127,23 +146,12 @@ public class TransactionService {
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
+
             connection.setAutoCommit(false);
+
             try {
-                // Update database balance
-                boolean balanceUpdated =
-                        accountDatabaseRepository.updateBalance(
-                                connection,
-                                account.getAccountNumber(),
-                                newBalance
-                        );
 
-                if (!balanceUpdated) {
-                    throw new SQLException(
-                            "Account balance could not be updated."
-                    );
-                }
-
-                transactionDatabaseRepository.saveTransaction(
+                executeTransaction(
                         connection,
                         account,
                         "Withdrawal",
@@ -152,28 +160,64 @@ public class TransactionService {
                 );
 
                 connection.commit();
+
                 // Update Java object after successful commit
-                account.withdraw(amount);
+                account.decreaseBalanceSilently(amount);
+
                 System.out.println(
                         "Withdrawal completed successfully."
                 );
 
             } catch (SQLException e) {
+
                 connection.rollback();
+
                 System.out.println(
                         "Withdrawal failed. Database transaction rolled back."
                 );
+
                 e.printStackTrace();
             }
 
         } catch (SQLException e) {
+
             System.out.println(
                     "Database connection error."
             );
+
             e.printStackTrace();
         }
     }
 
+    private void executeTransaction(
+            Connection connection,
+            BankAccount account,
+            String transactionType,
+            double amount,
+            double newBalance)
+            throws SQLException {
+
+        boolean balanceUpdated =
+                accountDatabaseRepository.updateBalance(
+                        connection,
+                        account.getAccountNumber(),
+                        newBalance
+                );
+
+        if (!balanceUpdated) {
+            throw new SQLException(
+                    "Account balance could not be updated."
+            );
+        }
+
+        transactionDatabaseRepository.saveTransaction(
+                connection,
+                account,
+                transactionType,
+                amount,
+                newBalance
+        );
+    }
 
     // ==========================================
     // MINI STATEMENT

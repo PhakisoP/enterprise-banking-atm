@@ -15,7 +15,7 @@ public class ValidationService {
     public boolean validateCustomerId(int customerId,
                                       CustomerRepository repository) {
 
-        if (repository.customerIDExists(customerId)) {
+        if (repository.customerIdExists(customerId)) {
 
             System.out.println();
             System.out.println("Customer ID already exists!");

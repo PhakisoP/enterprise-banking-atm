@@ -9,32 +9,60 @@ import java.sql.SQLException;
 
 public class AccountDatabaseRepository {
 
+    private static final String UPDATE_BALANCE_SQL = """
+            UPDATE accounts
+            SET balance = ?
+            WHERE account_number = ?
+            """;
+
+    private static final String UPDATE_FAILED_ATTEMPTS_SQL = """
+            UPDATE accounts
+            SET failed_attempts = ?
+            WHERE account_number = ?
+            """;
+
+    private static final String LOCK_ACCOUNT_SQL = """
+            UPDATE accounts
+            SET is_locked = TRUE
+            WHERE account_number = ?
+            """;
+
+    private static final String RESET_LOGIN_STATE_SQL = """
+            UPDATE accounts
+            SET failed_attempts = 0,
+                is_locked = FALSE
+            WHERE account_number = ?
+            """;
+
+    private static final String UPDATE_PIN_SQL = """
+            UPDATE accounts
+            SET pin = ?
+            WHERE account_number = ?
+            """;
+
+    private static final String CHECK_ACCOUNT_LOCKED_SQL = """
+            SELECT is_locked
+            FROM accounts
+            WHERE account_number = ?
+            """;
+
+
+    // ============================================================
+    // UPDATE BALANCE
+    // ============================================================
+
     public boolean updateBalance(
             int accountNumber,
             double newBalance) {
 
-        String sql = """
-                UPDATE accounts
-                SET balance = ?
-                WHERE account_number = ?
-                """;
-
         try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     DatabaseConnection.getConnection()) {
 
-            statement.setDouble(1, newBalance);
-
-            statement.setString(
-                    2,
-                    String.valueOf(accountNumber)
+            return updateBalance(
+                    connection,
+                    accountNumber,
+                    newBalance
             );
-
-            int rowsUpdated =
-                    statement.executeUpdate();
-
-            return rowsUpdated == 1;
 
         } catch (SQLException e) {
 
@@ -48,58 +76,41 @@ public class AccountDatabaseRepository {
         }
     }
 
+
     public boolean updateBalance(
             Connection connection,
             int accountNumber,
             double newBalance)
             throws SQLException {
 
-        String sql = """
-                UPDATE accounts
-                SET balance = ?
-                WHERE account_number = ?
-                """;
-
         try (PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             UPDATE_BALANCE_SQL)) {
 
             statement.setDouble(1, newBalance);
+            statement.setInt(2, accountNumber);
 
-            statement.setString(
-                    2,
-                    String.valueOf(accountNumber)
-            );
-
-            int rowsUpdated =
-                    statement.executeUpdate();
-
-            return rowsUpdated == 1;
-
-
+            return statement.executeUpdate() == 1;
         }
-
     }
+
+
+    // ============================================================
+    // UPDATE FAILED LOGIN ATTEMPTS
+    // ============================================================
+
     public boolean updateFailedAttempts(
             int accountNumber,
             int failedAttempts) {
 
-        String sql = """
-            UPDATE accounts
-            SET failed_attempts = ?
-            WHERE account_number = ?
-            """;
-
         try (Connection connection =
                      DatabaseConnection.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             UPDATE_FAILED_ATTEMPTS_SQL)) {
 
             statement.setInt(1, failedAttempts);
-
-            statement.setString(
-                    2,
-                    String.valueOf(accountNumber)
-            );
+            statement.setInt(2, accountNumber);
 
             return statement.executeUpdate() == 1;
 
@@ -114,23 +125,21 @@ public class AccountDatabaseRepository {
             return false;
         }
     }
-    public boolean lockAccount(int accountNumber) {
 
-        String sql = """
-            UPDATE accounts
-            SET is_locked = TRUE
-            WHERE account_number = ?
-            """;
+
+    // ============================================================
+    // LOCK ACCOUNT
+    // ============================================================
+
+    public boolean lockAccount(int accountNumber) {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             LOCK_ACCOUNT_SQL)) {
 
-            statement.setString(
-                    1,
-                    String.valueOf(accountNumber)
-            );
+            statement.setInt(1, accountNumber);
 
             return statement.executeUpdate() == 1;
 
@@ -147,33 +156,49 @@ public class AccountDatabaseRepository {
     }
 
 
+    // ============================================================
+    // UNLOCK ACCOUNT
+    // ============================================================
+
+    public boolean unlockAccount(int accountNumber) {
+
+        return resetLoginState(
+                accountNumber,
+                "Error unlocking account."
+        );
+    }
+
+
+    // ============================================================
+    // RESET LOGIN ATTEMPTS
+    // ============================================================
 
     public boolean resetLoginAttempts(int accountNumber) {
 
-        String sql = """
-            UPDATE accounts
-            SET failed_attempts = 0,
-                is_locked = FALSE
-            WHERE account_number = ?
-            """;
+        return resetLoginState(
+                accountNumber,
+                "Error resetting login attempts."
+        );
+    }
+
+
+    private boolean resetLoginState(
+            int accountNumber,
+            String errorMessage) {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             RESET_LOGIN_STATE_SQL)) {
 
-            statement.setString(
-                    1,
-                    String.valueOf(accountNumber)
-            );
+            statement.setInt(1, accountNumber);
 
             return statement.executeUpdate() == 1;
 
         } catch (SQLException e) {
 
-            System.out.println(
-                    "Error resetting login attempts."
-            );
+            System.out.println(errorMessage);
 
             e.printStackTrace();
 
@@ -182,58 +207,40 @@ public class AccountDatabaseRepository {
     }
 
 
+    // ============================================================
+    // UPDATE PIN
+    // ============================================================
+
     public boolean updatePin(
             Connection connection,
             int accountNumber,
-            String newPin) throws SQLException {
-
-        String sql = """
-            UPDATE accounts
-            SET pin = ?
-            WHERE account_number = ?
-            """;
+            String newPin)
+            throws SQLException {
 
         try (PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             UPDATE_PIN_SQL)) {
 
             statement.setString(1, newPin);
-            statement.setString(
-                    2,
-                    String.valueOf(accountNumber)
-            );
+            statement.setInt(2, accountNumber);
 
-            int rowsUpdated =
-                    statement.executeUpdate();
-
-            return rowsUpdated == 1;
+            return statement.executeUpdate() == 1;
         }
     }
+
+
     public boolean updatePin(
             int accountNumber,
             String newPin) {
 
-        String sql = """
-            UPDATE accounts
-            SET pin = ?
-            WHERE account_number = ?
-            """;
-
         try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     DatabaseConnection.getConnection()) {
 
-            statement.setString(1, newPin);
-
-            statement.setString(
-                    2,
-                    String.valueOf(accountNumber)
+            return updatePin(
+                    connection,
+                    accountNumber,
+                    newPin
             );
-
-            int rowsUpdated =
-                    statement.executeUpdate();
-
-            return rowsUpdated == 1;
 
         } catch (SQLException e) {
 
@@ -248,32 +255,29 @@ public class AccountDatabaseRepository {
     }
 
 
-    public boolean isAccountLocked(int accountNumber) {
+    // ============================================================
+    // CHECK ACCOUNT LOCK STATUS
+    // ============================================================
 
-        String sql = """
-        SELECT is_locked
-        FROM accounts
-        WHERE account_number = ?
-        """;
+    public boolean isAccountLocked(int accountNumber) {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
              PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             CHECK_ACCOUNT_LOCKED_SQL)) {
 
-            statement.setString(
-                    1,
-                    String.valueOf(accountNumber)
-            );
+            statement.setInt(1, accountNumber);
 
             try (ResultSet resultSet =
                          statement.executeQuery()) {
 
                 if (resultSet.next()) {
 
-                    return resultSet.getBoolean("is_locked");
+                    return resultSet.getBoolean(
+                            "is_locked"
+                    );
                 }
-
             }
 
         } catch (SQLException e) {
@@ -284,6 +288,7 @@ public class AccountDatabaseRepository {
 
             e.printStackTrace();
         }
+
         return false;
-     }
     }
+}

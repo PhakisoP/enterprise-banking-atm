@@ -14,6 +14,27 @@ import java.util.List;
 
 public class TransactionDatabaseRepository {
 
+    private static final String INSERT_TRANSACTION_SQL = """
+            INSERT INTO transactions
+            (account_number, transaction_type, amount, balance_after)
+            VALUES (?, ?, ?, ?)
+            """;
+
+    private static final String FIND_RECENT_TRANSACTIONS_SQL = """
+            SELECT transaction_type,
+                   amount,
+                   transaction_date
+            FROM transactions
+            WHERE account_number = ?
+            ORDER BY transaction_id DESC
+            LIMIT ?
+            """;
+
+
+    // ============================================================
+    // SAVE TRANSACTION
+    // ============================================================
+
     public void saveTransaction(
             Connection connection,
             BankAccount account,
@@ -22,18 +43,13 @@ public class TransactionDatabaseRepository {
             double balanceAfter)
             throws SQLException {
 
-        String sql = """
-                INSERT INTO transactions
-                (account_number, transaction_type, amount, balance_after)
-                VALUES (?, ?, ?, ?)
-                """;
-
         try (PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             INSERT_TRANSACTION_SQL)) {
 
-            statement.setString(
+            statement.setInt(
                     1,
-                    String.valueOf(account.getAccountNumber())
+                    account.getAccountNumber()
             );
 
             statement.setString(
@@ -53,59 +69,73 @@ public class TransactionDatabaseRepository {
 
             statement.executeUpdate();
         }
-
     }
+
+
+    // ============================================================
+    // FIND RECENT TRANSACTIONS
+    // ============================================================
+
     public List<Transaction> findRecentTransactions(
             Connection connection,
             int accountNumber,
-            int limit) throws SQLException {
+            int limit)
+            throws SQLException {
 
-        String sql = """
-            SELECT transaction_type,
-                   amount,
-                   transaction_date
-            FROM transactions
-            WHERE account_number = ?
-            ORDER BY transaction_id DESC
-            LIMIT ?
-            """;
-
-        List<Transaction> transactions = new ArrayList<>();
+        List<Transaction> transactions =
+                new ArrayList<>();
 
         try (PreparedStatement statement =
-                     connection.prepareStatement(sql)) {
+                     connection.prepareStatement(
+                             FIND_RECENT_TRANSACTIONS_SQL)) {
 
             statement.setInt(1, accountNumber);
             statement.setInt(2, limit);
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
 
                 while (resultSet.next()) {
 
-                    String transactionType =
-                            resultSet.getString("transaction_type");
-
-                    double amount =
-                            resultSet.getDouble("amount");
-
-                    Timestamp timestamp =
-                            resultSet.getTimestamp("transaction_date");
-
-                    LocalDateTime transactionDate =
-                            timestamp.toLocalDateTime();
-
-                    Transaction transaction =
-                            new Transaction(
-                                    transactionType,
-                                    amount,
-                                    transactionDate
-                            );
-
-                    transactions.add(transaction);
+                    transactions.add(
+                            mapTransaction(resultSet)
+                    );
                 }
             }
         }
 
         return transactions;
+    }
+
+
+    // ============================================================
+    // MAP DATABASE RESULT TO TRANSACTION
+    // ============================================================
+
+    private Transaction mapTransaction(
+            ResultSet resultSet)
+            throws SQLException {
+
+        String transactionType =
+                resultSet.getString(
+                        "transaction_type"
+                );
+
+        double amount =
+                resultSet.getDouble("amount");
+
+        Timestamp timestamp =
+                resultSet.getTimestamp(
+                        "transaction_date"
+                );
+
+        LocalDateTime transactionDate =
+                timestamp.toLocalDateTime();
+
+        return new Transaction(
+                transactionType,
+                amount,
+                transactionDate
+        );
     }
 }

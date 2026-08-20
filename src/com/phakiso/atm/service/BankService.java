@@ -2,36 +2,35 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.factory.CustomerFactory;
 import com.phakiso.atm.model.Customer;
-import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
+
 import java.util.List;
 
 public class BankService {
 
     private final PersistenceService persistenceService =
             new PersistenceService();
-    private final CustomerFactory customerFactory =
-            new CustomerFactory();
     private final CustomerDatabaseRepository customerDatabaseRepository =
             new CustomerDatabaseRepository();
+    private final CustomerFactory customerFactory =
+            new CustomerFactory();
 
 
-    public List<Customer> getAllCustomers(
-            CustomerRepository repository) {
+    public List<Customer> getAllCustomers() {
 
-        return repository.getCustomers();
+        return customerDatabaseRepository.getAllCustomers();
     }
 
-    public boolean validateCustomerId(
-            int customerID,
-            CustomerRepository repository) {
 
-        return !repository.customerIDExists(customerID);
+    public boolean validateCustomerId(int customerId) {
+
+        return !customerDatabaseRepository
+                .customerIdExists(customerId);
     }
 
 
     public Customer createCustomer(
-            CustomerRepository repository,
             int customerID,
             String firstName,
             String lastName,
@@ -56,26 +55,24 @@ public class BankService {
                 pin
         );
 
-        repository.addCustomer(customer);
-
-        persistenceService.save(repository);
+        customerDatabaseRepository.saveCustomer(customer);
 
         return customer;
     }
 
-    public Customer findCustomer(
-            CustomerRepository repository,
-            int accountNumber) {
 
-        return repository.findCustomerByAccountNumber(accountNumber);
+    public Customer findCustomer(int accountNumber) {
+
+        return customerDatabaseRepository.findCustomerByAccountNumber(
+                accountNumber
+        );
     }
-    public boolean deleteCustomer(
-            CustomerRepository repository,
-            int accountNumber) {
-        boolean deleted = repository.deleteCustomer(accountNumber);
-        if (deleted) {
-            persistenceService.save(repository);
-        }
-        return deleted;
-        }
+
+
+    public boolean deleteCustomer(int accountNumber) {
+
+        return customerDatabaseRepository.deleteCustomer(
+                accountNumber
+        );
     }
+}

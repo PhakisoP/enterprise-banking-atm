@@ -1,5 +1,7 @@
 package com.phakiso.atm.service;
 
+import com.phakiso.atm.service.CustomerService;
+import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerRepository;
@@ -23,7 +25,7 @@ public class AdminService {
         System.out.print("Enter Customer ID: ");
         int customerID = scanner.nextInt();
 
-        if (!bankService.validateCustomerId(customerID, repository)) {
+        if (!bankService.validateCustomerId(customerID)) {
             System.out.println();
             System.out.println("Customer ID already exists!");
             return;
@@ -95,7 +97,6 @@ public class AdminService {
         }
 
         Customer customer = bankService.createCustomer(
-                repository,
                 customerID,
                 firstName,
                 lastName,
@@ -121,17 +122,17 @@ public class AdminService {
 
     }
 
-    public void findCustomer(CustomerRepository repository) {
+    public void findCustomer() {
 
         System.out.println("================================");
-        System.out.println("       FIND CUSTOMER");
+        System.out.println("          FIND CUSTOMER");
         System.out.println("================================");
 
         System.out.print("Enter Account Number: ");
         int accountNumber = scanner.nextInt();
 
-        Customer customer =
-                bankService.findCustomer(repository, accountNumber);
+        Customer customer = bankService.findCustomer(
+                accountNumber);
 
         if (customer == null) {
 
@@ -139,7 +140,6 @@ public class AdminService {
             System.out.println("Customer not found.");
             return;
         }
-
         System.out.println();
         System.out.println("================================");
         System.out.println("     CUSTOMER DETAILS");
@@ -174,7 +174,7 @@ public class AdminService {
                 + customer.getAccount().getBalance());
     }
 
-    public void deleteCustomer(CustomerRepository repository) {
+    public void deleteCustomer() {
 
         System.out.println("================================");
         System.out.println("      DELETE CUSTOMER");
@@ -184,7 +184,7 @@ public class AdminService {
         int accountNumber = scanner.nextInt();
 
         boolean deleted =
-                bankService.deleteCustomer(repository, accountNumber);
+                bankService.deleteCustomer(accountNumber);
 
         System.out.println();
 
@@ -203,7 +203,7 @@ public class AdminService {
         System.out.println("          ALL CUSTOMERS");
         System.out.println("========================================");
 
-        for (Customer customer : bankService.getAllCustomers(repository)) {
+        for (Customer customer : bankService.getAllCustomers()) {
 
             System.out.println("Customer ID    : "
                     + customer.getCustomerId());
@@ -291,21 +291,25 @@ public class AdminService {
                     break;
 
                 case 3:
-                    findCustomer(repository);
+                    findCustomer();
                     break;
 
                 case 4:
-                    deleteCustomer(repository);
+                    deleteCustomer();
                     break;
 
                 case 5:
 
-                    CustomerService customerService = new CustomerService();
+                    AuthenticationService authenticationService =
+                            new AuthenticationService(scanner);
+
+                    CustomerService customerService =
+                            new CustomerService();
 
                     while (true) {
 
                         Customer loggedInCustomer =
-                                customerService.login();
+                                authenticationService.login();
 
                         if (loggedInCustomer != null) {
 
