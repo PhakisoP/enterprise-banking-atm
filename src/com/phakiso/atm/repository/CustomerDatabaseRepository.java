@@ -95,6 +95,35 @@ public class CustomerDatabaseRepository {
             WHERE customer_id = ?
             """;
 
+    private static final String ID_NUMBER_EXISTS_SQL =
+            """
+            SELECT 1
+            FROM customers
+            WHERE id_number = ?
+            """;
+
+    private static final String PHONE_NUMBER_EXISTS_SQL =
+            """
+            SELECT 1
+            FROM customers
+            WHERE phone_number = ?
+            """;
+
+    private static final String EMAIL_EXISTS_SQL =
+            """
+            SELECT 1
+            FROM customers
+            WHERE email = ?
+            """;
+
+    private static final String ACCOUNT_NUMBER_EXISTS_SQL =
+            """
+            SELECT 1
+            FROM accounts
+            WHERE account_number = ?
+            """;
+
+
     private static final String FIND_CUSTOMER_ID_BY_ACCOUNT_SQL =
             """
             SELECT customer_id
@@ -146,6 +175,118 @@ public class CustomerDatabaseRepository {
 
             System.out.println(
                     "Error checking customer ID."
+            );
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    public boolean idNumberExists(String idNumber) {
+
+        try (Connection connection =
+                     DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             ID_NUMBER_EXISTS_SQL)) {
+
+            statement.setString(1, idNumber);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error checking ID number."
+            );
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    public boolean phoneNumberExists(String phoneNumber) {
+
+        try (Connection connection =
+                     DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             PHONE_NUMBER_EXISTS_SQL)) {
+
+            statement.setString(1, phoneNumber);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error checking phone number."
+            );
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    public boolean emailExists(String email) {
+
+        try (Connection connection =
+                     DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             EMAIL_EXISTS_SQL)) {
+
+            statement.setString(1, email);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error checking email."
+            );
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    public boolean accountNumberExists(int accountNumber) {
+
+        try (Connection connection =
+                     DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             ACCOUNT_NUMBER_EXISTS_SQL)) {
+
+            statement.setInt(1, accountNumber);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                return resultSet.next();
+            }
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error checking account number."
             );
 
             e.printStackTrace();

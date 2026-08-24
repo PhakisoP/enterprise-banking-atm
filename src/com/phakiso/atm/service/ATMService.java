@@ -3,7 +3,6 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
-import com.phakiso.atm.repository.CustomerRepository;
 
 import java.util.Scanner;
 
@@ -98,7 +97,6 @@ public class ATMService {
 
     public void transferMoney(
             Customer sender,
-            CustomerRepository repository,
             Scanner scanner) {
 
         System.out.print(
@@ -117,7 +115,6 @@ public class ATMService {
 
         transactionService.transferMoney(
                 sender,
-                repository,
                 recipientAccountNumber,
                 amount
         );

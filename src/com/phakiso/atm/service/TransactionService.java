@@ -5,7 +5,6 @@ import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.model.Transaction;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
-import com.phakiso.atm.repository.CustomerRepository;
 import com.phakiso.atm.repository.TransactionDatabaseRepository;
 import com.phakiso.atm.util.DatabaseConnection;
 
@@ -23,6 +22,8 @@ public class TransactionService {
 
     private final CustomerDatabaseRepository customerDatabaseRepository =
             new CustomerDatabaseRepository();
+
+
 
     // ==========================================
     // DEPOSIT
@@ -286,15 +287,15 @@ public class TransactionService {
 
     public void transferMoney(
             Customer sender,
-            CustomerRepository repository,
             int recipientAccountNumber,
             double amount) {
 
         Customer recipient =
-                repository.findCustomerByAccountNumberExcludingSender(
-                        recipientAccountNumber,
-                        sender
-                );
+                customerDatabaseRepository
+                        .findCustomerByAccountNumberExcludingSender(
+                                recipientAccountNumber,
+                                sender
+                        );
 
         if (recipient == null) {
 

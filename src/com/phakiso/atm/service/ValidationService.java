@@ -1,10 +1,15 @@
 package com.phakiso.atm.service;
 
-import com.phakiso.atm.repository.CustomerRepository;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+
 public class ValidationService {
+
+    private final CustomerDatabaseRepository customerDatabaseRepository =
+            new CustomerDatabaseRepository();
+
     public boolean isValidName(String name) {
         if (name == null || name.isBlank()) {
             return false;
@@ -12,10 +17,9 @@ public class ValidationService {
         return name.matches("[A-Za-z]+");
     }
 
-    public boolean validateCustomerId(int customerId,
-                                      CustomerRepository repository) {
+    public boolean validateCustomerId(int customerId) {
 
-        if (repository.customerIdExists(customerId)) {
+        if (customerDatabaseRepository.customerIdExists(customerId)) {
 
             System.out.println();
             System.out.println("Customer ID already exists!");
@@ -24,16 +28,16 @@ public class ValidationService {
         }
 
         return true;
-
     }
 
-    public boolean validateIdNumber(String idNumber,
-                                    CustomerRepository repository) {
+    public boolean validateIdNumber(String idNumber) {
 
-        if (repository.idNumberExists(idNumber)) {
+        if (customerDatabaseRepository.idNumberExists(idNumber)) {
 
             System.out.println();
-            System.out.println("A customer with this ID already exists!");
+            System.out.println(
+                    "A customer with this ID already exists!"
+            );
 
             return false;
         }
@@ -41,12 +45,18 @@ public class ValidationService {
         return true;
     }
 
-    public boolean validatePhoneNumber(String phoneNumber, CustomerRepository repository) {
-        if (repository.phoneNumberExists(phoneNumber)) {
+    public boolean validatePhoneNumber(String phoneNumber) {
+
+        if (customerDatabaseRepository.phoneNumberExists(phoneNumber)) {
+
             System.out.println();
-            System.out.println("This Phone number is already linked to another customer!!");
+            System.out.println(
+                    "This Phone number is already linked to another customer!!"
+            );
+
             return false;
         }
+
         return true;
     }
 
@@ -135,25 +145,36 @@ public class ValidationService {
     }
 
 
-public boolean validateEmail(String email,CustomerRepository repository) {
-        if (repository.emailExists(email)) {
+    public boolean validateEmail(String email) {
+
+        if (customerDatabaseRepository.emailExists(email)) {
+
             System.out.println();
-            System.out.println("This email is already linked to another customer!");
+            System.out.println(
+                    "This email is already linked to another customer!"
+            );
+
             return false;
         }
+
         return true;
-        }
+    }
 
 
-   public boolean validateAccountNumber(int accountNumber,CustomerRepository repository) {
-        if (repository.accountNumberExists(accountNumber)) {
+    public boolean validateAccountNumber(int accountNumber) {
+
+        if (customerDatabaseRepository.accountNumberExists(accountNumber)) {
+
             System.out.println();
-            System.out.println("An account with this account number already exists!");
+            System.out.println(
+                    "An account with this account number already exists."
+            );
+
             return false;
         }
-        return true;
 
-        }
+        return true;
+    }
 
         public boolean validateOpeningBalance(double openingBalance) {
         if (openingBalance < 0) {
@@ -175,7 +196,6 @@ public boolean validateEmail(String email,CustomerRepository repository) {
 
         return true;
     }
-
 
     public boolean isValidAccountType(String accountType) {
 

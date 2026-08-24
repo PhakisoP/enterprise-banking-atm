@@ -1,7 +1,6 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
-import com.phakiso.atm.repository.CustomerRepository;
 import java.util.Scanner;
 
 public class CustomerService {
@@ -46,8 +45,7 @@ public class CustomerService {
 
     }
 
-    public void displayMenu(Customer customer,
-                            CustomerRepository repository) {
+    public void displayMenu(Customer customer) {
 
         boolean running = true;
 
@@ -107,7 +105,6 @@ public class CustomerService {
 
                     transactionService.transferMoney(
                             customer,
-                            repository,
                             accountNumber,
                             amount
                     );

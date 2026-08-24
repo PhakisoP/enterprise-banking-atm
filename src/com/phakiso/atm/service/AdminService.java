@@ -4,7 +4,6 @@ import com.phakiso.atm.service.CustomerService;
 import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
-import com.phakiso.atm.repository.CustomerRepository;
 import java.util.Scanner;
 
 public class AdminService {
@@ -17,7 +16,7 @@ public class AdminService {
     private final AccountDatabaseRepository accountDatabaseRepository =
             new AccountDatabaseRepository();
 
-    public void createCustomer(CustomerRepository repository) {
+    public void createCustomer() {
             System.out.println("================================");
             System.out.println("    Create New Customer");
             System.out.println("================================");
@@ -35,7 +34,7 @@ public class AdminService {
         System.out.print("Enter ID number: ");
         String idNumber = scanner.next();
 
-        if (!validationService.validateIdNumber(idNumber, repository)) {
+        if (!validationService.validateIdNumber(idNumber)) {
             return;
         }
         if (!validationService.isValidIdNumber(idNumber)) {
@@ -45,19 +44,19 @@ public class AdminService {
 
                     System.out.print("Enter Phone Number: ");
     String phoneNumber = scanner.next();
-        if (!validationService.validatePhoneNumber(phoneNumber, repository)) {
+        if (!validationService.validatePhoneNumber(phoneNumber)) {
             return;
         }
 
                     System.out.print("Enter Email: ");
     String email = scanner.next();
-        if (!validationService.validateEmail(email, repository)) {
+        if (!validationService.validateEmail(email)) {
             return;
         }
 
                     System.out.print("Enter Account Number: ");
     int accountNumber = scanner.nextInt();
-        if (!validationService.validateAccountNumber(accountNumber, repository)) {
+        if (!validationService.validateAccountNumber(accountNumber)) {
             return;
         }
 
@@ -118,7 +117,6 @@ public class AdminService {
 
         System.out.println("Account Number: "
                 + customer.getAccount().getAccountNumber());
-
 
     }
 
@@ -196,7 +194,7 @@ public class AdminService {
     }
 
 
-    public void viewAllCustomers(CustomerRepository repository) {
+    public void viewAllCustomers() {
 
         System.out.println();
         System.out.println("========================================");
@@ -259,7 +257,7 @@ public class AdminService {
         }
     }
 
-    public void displayAdminMenu(CustomerRepository repository)  {
+    public void displayAdminMenu()  {
 
         boolean running = true;
         while (running) {
@@ -283,11 +281,11 @@ public class AdminService {
             switch (option) {
 
                 case 1:
-                    createCustomer(repository);
+                    createCustomer();
                     break;
 
                 case 2:
-                    viewAllCustomers(repository);
+                    viewAllCustomers();
                     break;
 
                 case 3:
@@ -314,8 +312,7 @@ public class AdminService {
                         if (loggedInCustomer != null) {
 
                             customerService.displayMenu(
-                                    loggedInCustomer,
-                                    repository
+                                    loggedInCustomer
                             );
 
                             break;
