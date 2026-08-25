@@ -3,6 +3,7 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
+import java.sql.SQLException;
 
 import java.util.Scanner;
 
@@ -97,7 +98,8 @@ public class ATMService {
 
     public void transferMoney(
             Customer sender,
-            Scanner scanner) {
+            Scanner scanner)
+            throws SQLException {
 
         System.out.print(
                 "Recipient Account Number: "
@@ -125,13 +127,6 @@ public class ATMService {
     // CHANGE PIN
     // ==========================================
 
-    // ==========================================
-// CHANGE PIN
-// ==========================================
-
-    // ==========================================
-// CHANGE PIN
-// ==========================================
 
     public void changePin(
             Customer customer,

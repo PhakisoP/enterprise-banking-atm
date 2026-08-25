@@ -154,14 +154,14 @@ public class CustomerDatabaseRepository {
 // CHECK CUSTOMER ID EXISTS
 // ============================================================
 
-    public boolean customerIdExists(int customerId) {
+    public boolean customerIdExists(int customerId)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
              PreparedStatement statement =
                      connection.prepareStatement(
-                             CUSTOMER_ID_EXISTS_SQL
-                     )) {
+                             CUSTOMER_ID_EXISTS_SQL)) {
 
             statement.setInt(1, customerId);
 
@@ -170,20 +170,11 @@ public class CustomerDatabaseRepository {
 
                 return resultSet.next();
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking customer ID."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
-    public boolean idNumberExists(String idNumber) {
+    public boolean idNumberExists(String idNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -198,20 +189,11 @@ public class CustomerDatabaseRepository {
 
                 return resultSet.next();
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking ID number."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
-    public boolean phoneNumberExists(String phoneNumber) {
+    public boolean phoneNumberExists(String phoneNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -226,20 +208,11 @@ public class CustomerDatabaseRepository {
 
                 return resultSet.next();
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking phone number."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
-    public boolean emailExists(String email) {
+    public boolean emailExists(String email)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -254,20 +227,11 @@ public class CustomerDatabaseRepository {
 
                 return resultSet.next();
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking email."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
-    public boolean accountNumberExists(int accountNumber) {
+    public boolean accountNumberExists(int accountNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -282,16 +246,6 @@ public class CustomerDatabaseRepository {
 
                 return resultSet.next();
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking account number."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -444,7 +398,8 @@ public class CustomerDatabaseRepository {
     // FIND CUSTOMER BY CUSTOMER ID
     // ============================================================
 
-    public Customer findCustomerById(int customerId) {
+    public Customer findCustomerById(int customerId)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -465,14 +420,6 @@ public class CustomerDatabaseRepository {
                     return mapCustomer(resultSet);
                 }
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error finding customer by ID."
-            );
-
-            e.printStackTrace();
         }
 
         return null;
@@ -484,7 +431,8 @@ public class CustomerDatabaseRepository {
     // ============================================================
 
     public Customer findCustomerByAccountNumber(
-            int accountNumber) {
+            int accountNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -505,28 +453,24 @@ public class CustomerDatabaseRepository {
                     return mapCustomer(resultSet);
                 }
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error finding customer by account number."
-            );
-
-            e.printStackTrace();
         }
 
         return null;
     }
 
-    public boolean deleteCustomer(int accountNumber) {
 
-        Customer customer = findCustomerByAccountNumber(accountNumber);
+    public boolean deleteCustomer(int accountNumber)
+            throws SQLException {
+
+        Customer customer =
+                findCustomerByAccountNumber(accountNumber);
 
         if (customer == null) {
             return false;
         }
 
-        int customerId = customer.getCustomerId();
+        int customerId =
+                customer.getCustomerId();
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
@@ -571,16 +515,6 @@ public class CustomerDatabaseRepository {
                 connection.rollback();
                 throw e;
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error deleting customer from MySQL."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -591,7 +525,8 @@ public class CustomerDatabaseRepository {
 
     public Customer findCustomerByAccountNumberExcludingSender(
             int accountNumber,
-            Customer sender) {
+            Customer sender)
+            throws SQLException {
 
         Customer customer =
                 findCustomerByAccountNumber(
@@ -615,7 +550,8 @@ public class CustomerDatabaseRepository {
 // FIND ALL CUSTOMERS
 // ============================================================
 
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers()
+            throws SQLException {
 
         List<Customer> customers = new ArrayList<>();
 
@@ -634,14 +570,6 @@ public class CustomerDatabaseRepository {
                         mapCustomer(resultSet)
                 );
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error retrieving all customers."
-            );
-
-            e.printStackTrace();
         }
 
         return customers;

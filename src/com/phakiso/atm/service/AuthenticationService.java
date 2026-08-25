@@ -3,6 +3,7 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
+import java.sql.SQLException;
 
 import java.util.Scanner;
 
@@ -135,7 +136,8 @@ public class AuthenticationService {
     }
 
 
-    public Customer login() {
+    public Customer login()
+            throws SQLException {
 
         System.out.print(
                 "Enter Account Number: "

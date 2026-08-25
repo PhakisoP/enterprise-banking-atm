@@ -1,6 +1,7 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CustomerService {
@@ -45,7 +46,8 @@ public class CustomerService {
 
     }
 
-    public void displayMenu(Customer customer) {
+    public void displayMenu(Customer customer)
+            throws SQLException {
 
         boolean running = true;
 

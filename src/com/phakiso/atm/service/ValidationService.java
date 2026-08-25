@@ -3,6 +3,7 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.sql.SQLException;
 
 
 public class ValidationService {
@@ -17,7 +18,8 @@ public class ValidationService {
         return name.matches("[A-Za-z]+");
     }
 
-    public boolean validateCustomerId(int customerId) {
+    public boolean validateCustomerId(int customerId)
+            throws SQLException {
 
         if (customerDatabaseRepository.customerIdExists(customerId)) {
 
@@ -30,7 +32,8 @@ public class ValidationService {
         return true;
     }
 
-    public boolean validateIdNumber(String idNumber) {
+    public boolean validateIdNumber(String idNumber)
+            throws SQLException {
 
         if (customerDatabaseRepository.idNumberExists(idNumber)) {
 
@@ -45,7 +48,8 @@ public class ValidationService {
         return true;
     }
 
-    public boolean validatePhoneNumber(String phoneNumber) {
+    public boolean validatePhoneNumber(String phoneNumber)
+            throws SQLException {
 
         if (customerDatabaseRepository.phoneNumberExists(phoneNumber)) {
 
@@ -145,7 +149,8 @@ public class ValidationService {
     }
 
 
-    public boolean validateEmail(String email) {
+    public boolean validateEmail(String email)
+            throws SQLException {
 
         if (customerDatabaseRepository.emailExists(email)) {
 
@@ -161,7 +166,8 @@ public class ValidationService {
     }
 
 
-    public boolean validateAccountNumber(int accountNumber) {
+    public boolean validateAccountNumber(int accountNumber)
+            throws SQLException {
 
         if (customerDatabaseRepository.accountNumberExists(accountNumber)) {
 
@@ -172,6 +178,7 @@ public class ValidationService {
 
             return false;
         }
+
 
         return true;
     }

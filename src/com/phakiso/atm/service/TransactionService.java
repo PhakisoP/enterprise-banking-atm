@@ -288,7 +288,8 @@ public class TransactionService {
     public void transferMoney(
             Customer sender,
             int recipientAccountNumber,
-            double amount) {
+            double amount)
+            throws SQLException {
 
         Customer recipient =
                 customerDatabaseRepository

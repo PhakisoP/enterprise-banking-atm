@@ -3,25 +3,29 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.factory.CustomerFactory;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
+import java.sql.SQLException;
 
 import java.util.List;
 
-public class BankService {
 
+public class BankService {
 
     private final CustomerDatabaseRepository customerDatabaseRepository =
             new CustomerDatabaseRepository();
+
     private final CustomerFactory customerFactory =
             new CustomerFactory();
 
 
-    public List<Customer> getAllCustomers() {
+    public List<Customer> getAllCustomers()
+            throws SQLException {
 
         return customerDatabaseRepository.getAllCustomers();
     }
 
 
-    public boolean validateCustomerId(int customerId) {
+    public boolean validateCustomerId(int customerId)
+            throws SQLException {
 
         return !customerDatabaseRepository
                 .customerIdExists(customerId);
@@ -38,7 +42,8 @@ public class BankService {
             int accountNumber,
             String accountType,
             double openingBalance,
-            String pin) {
+            String pin)
+            throws SQLException {
 
         Customer customer = customerFactory.createCustomer(
                 customerID,
@@ -59,7 +64,8 @@ public class BankService {
     }
 
 
-    public Customer findCustomer(int accountNumber) {
+    public Customer findCustomer(int accountNumber)
+            throws SQLException {
 
         return customerDatabaseRepository.findCustomerByAccountNumber(
                 accountNumber
@@ -67,7 +73,8 @@ public class BankService {
     }
 
 
-    public boolean deleteCustomer(int accountNumber) {
+    public boolean deleteCustomer(int accountNumber)
+            throws SQLException {
 
         return customerDatabaseRepository.deleteCustomer(
                 accountNumber

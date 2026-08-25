@@ -5,6 +5,7 @@ import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
 import java.util.Scanner;
+import java.sql.SQLException;
 
 public class AdminService {
 
@@ -16,7 +17,7 @@ public class AdminService {
     private final AccountDatabaseRepository accountDatabaseRepository =
             new AccountDatabaseRepository();
 
-    public void createCustomer() {
+    public void createCustomer() throws SQLException {
             System.out.println("================================");
             System.out.println("    Create New Customer");
             System.out.println("================================");
@@ -120,7 +121,7 @@ public class AdminService {
 
     }
 
-    public void findCustomer() {
+    public void findCustomer() throws SQLException {
 
         System.out.println("================================");
         System.out.println("          FIND CUSTOMER");
@@ -172,7 +173,7 @@ public class AdminService {
                 + customer.getAccount().getBalance());
     }
 
-    public void deleteCustomer() {
+    public void deleteCustomer() throws SQLException {
 
         System.out.println("================================");
         System.out.println("      DELETE CUSTOMER");
@@ -194,7 +195,7 @@ public class AdminService {
     }
 
 
-    public void viewAllCustomers() {
+    public void viewAllCustomers() throws SQLException {
 
         System.out.println();
         System.out.println("========================================");
@@ -257,7 +258,7 @@ public class AdminService {
         }
     }
 
-    public void displayAdminMenu()  {
+    public void displayAdminMenu() throws SQLException {
 
         boolean running = true;
         while (running) {
