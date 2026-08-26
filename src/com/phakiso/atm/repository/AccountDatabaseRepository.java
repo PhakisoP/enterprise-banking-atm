@@ -53,7 +53,8 @@ public class AccountDatabaseRepository {
 
     public boolean updateBalance(
             int accountNumber,
-            double newBalance) {
+            double newBalance)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
@@ -63,16 +64,6 @@ public class AccountDatabaseRepository {
                     accountNumber,
                     newBalance
             );
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error updating account balance in MySQL."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -101,7 +92,8 @@ public class AccountDatabaseRepository {
 
     public boolean updateFailedAttempts(
             int accountNumber,
-            int failedAttempts) {
+            int failedAttempts)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -113,16 +105,6 @@ public class AccountDatabaseRepository {
             statement.setInt(2, accountNumber);
 
             return statement.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error updating failed login attempts."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -131,7 +113,8 @@ public class AccountDatabaseRepository {
     // LOCK ACCOUNT
     // ============================================================
 
-    public boolean lockAccount(int accountNumber) {
+    public boolean lockAccount(int accountNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -142,16 +125,6 @@ public class AccountDatabaseRepository {
             statement.setInt(1, accountNumber);
 
             return statement.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error locking account."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -160,7 +133,8 @@ public class AccountDatabaseRepository {
     // UNLOCK ACCOUNT
     // ============================================================
 
-    public boolean unlockAccount(int accountNumber) {
+    public boolean unlockAccount(int accountNumber)
+            throws SQLException {
 
         return resetLoginState(
                 accountNumber,
@@ -173,7 +147,8 @@ public class AccountDatabaseRepository {
     // RESET LOGIN ATTEMPTS
     // ============================================================
 
-    public boolean resetLoginAttempts(int accountNumber) {
+    public boolean resetLoginAttempts(int accountNumber)
+            throws SQLException {
 
         return resetLoginState(
                 accountNumber,
@@ -184,7 +159,8 @@ public class AccountDatabaseRepository {
 
     private boolean resetLoginState(
             int accountNumber,
-            String errorMessage) {
+            String errorMessage)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -195,14 +171,6 @@ public class AccountDatabaseRepository {
             statement.setInt(1, accountNumber);
 
             return statement.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-
-            System.out.println(errorMessage);
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -231,7 +199,8 @@ public class AccountDatabaseRepository {
 
     public boolean updatePin(
             int accountNumber,
-            String newPin) {
+            String newPin)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
@@ -241,16 +210,6 @@ public class AccountDatabaseRepository {
                     accountNumber,
                     newPin
             );
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error updating PIN in MySQL."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
     }
 
@@ -259,7 +218,8 @@ public class AccountDatabaseRepository {
     // CHECK ACCOUNT LOCK STATUS
     // ============================================================
 
-    public boolean isAccountLocked(int accountNumber) {
+    public boolean isAccountLocked(int accountNumber)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();
@@ -279,14 +239,6 @@ public class AccountDatabaseRepository {
                     );
                 }
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error checking account lock status."
-            );
-
-            e.printStackTrace();
         }
 
         return false;

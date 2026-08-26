@@ -1,7 +1,7 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
-import com.phakiso.atm.repository.AccountDatabaseRepository;
+
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import java.sql.SQLException;
 
@@ -12,8 +12,8 @@ public class AuthenticationService {
     private final CustomerDatabaseRepository customerDatabaseRepository =
             new CustomerDatabaseRepository();
 
-    private final AccountDatabaseRepository accountDatabaseRepository =
-            new AccountDatabaseRepository();
+    private final AccountService accountService =
+            new AccountService();
 
     private final Scanner scanner;
 
@@ -22,12 +22,13 @@ public class AuthenticationService {
     }
 
 
-    public boolean authenticate(Customer customer) {
+    public boolean authenticate(Customer customer)
+            throws SQLException {
 
         int accountNumber =
                 customer.getAccount().getAccountNumber();
 
-        if (accountDatabaseRepository.isAccountLocked(
+        if (accountService.isAccountLocked(
                 accountNumber)) {
 
             System.out.println();
@@ -60,7 +61,7 @@ public class AuthenticationService {
             if (customer.getAccount().validatePin(
                     enteredPin)) {
 
-                accountDatabaseRepository.resetLoginAttempts(
+                accountService.resetLoginAttempts(
                         accountNumber
                 );
 
@@ -82,7 +83,7 @@ public class AuthenticationService {
             int failedAttempts =
                     3 - attempts;
 
-            accountDatabaseRepository.updateFailedAttempts(
+            accountService.updateFailedAttempts(
                     accountNumber,
                     failedAttempts
             );
@@ -115,7 +116,7 @@ public class AuthenticationService {
 
             else {
 
-                accountDatabaseRepository.lockAccount(
+                accountService.lockAccount(
                         accountNumber
                 );
 

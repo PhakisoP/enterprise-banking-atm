@@ -1,10 +1,12 @@
 package com.phakiso.atm.app;
 
 import com.phakiso.atm.repository.AccountDatabaseRepository;
+import java.sql.SQLException;
 
 public class AccountBalanceDatabaseTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+            throws SQLException {
 
         System.out.println("========================================");
         System.out.println(" ACCOUNT BALANCE DATABASE TEST");

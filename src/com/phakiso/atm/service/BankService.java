@@ -24,13 +24,6 @@ public class BankService {
     }
 
 
-    public boolean validateCustomerId(int customerId)
-            throws SQLException {
-
-        return !customerDatabaseRepository
-                .customerIdExists(customerId);
-    }
-
 
     public Customer createCustomer(
             int customerID,

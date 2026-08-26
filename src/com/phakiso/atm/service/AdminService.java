@@ -3,7 +3,6 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.service.CustomerService;
 import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.model.Customer;
-import com.phakiso.atm.repository.AccountDatabaseRepository;
 import java.util.Scanner;
 import java.sql.SQLException;
 
@@ -14,8 +13,9 @@ public class AdminService {
             new ValidationService();
     private final BankService bankService =
             new BankService();
-    private final AccountDatabaseRepository accountDatabaseRepository =
-            new AccountDatabaseRepository();
+    private final AccountService accountService =
+            new AccountService();
+
 
     public void createCustomer() throws SQLException {
             System.out.println("================================");
@@ -25,9 +25,7 @@ public class AdminService {
         System.out.print("Enter Customer ID: ");
         int customerID = scanner.nextInt();
 
-        if (!bankService.validateCustomerId(customerID)) {
-            System.out.println();
-            System.out.println("Customer ID already exists!");
+        if (!validationService.validateCustomerId(customerID)) {
             return;
         }
 
@@ -233,10 +231,26 @@ public class AdminService {
         int accountNumber =
                 scanner.nextInt();
 
-        boolean unlocked =
-                accountDatabaseRepository.unlockAccount(
-                        accountNumber
-                );
+        boolean unlocked;
+
+        try {
+
+            unlocked =
+                    accountService.unlockAccount(
+                            accountNumber
+                    );
+
+        } catch (SQLException e) {
+
+            System.out.println();
+            System.out.println(
+                    "Unable to unlock account because of a database error."
+            );
+
+            e.printStackTrace();
+
+            return;
+        }
 
         if (unlocked) {
 

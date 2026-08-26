@@ -3,7 +3,6 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.model.Transaction;
-import com.phakiso.atm.repository.AccountDatabaseRepository;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import com.phakiso.atm.repository.TransactionDatabaseRepository;
 import com.phakiso.atm.util.DatabaseConnection;
@@ -14,15 +13,14 @@ import java.util.List;
 
 public class TransactionService {
 
-    private final AccountDatabaseRepository accountDatabaseRepository =
-            new AccountDatabaseRepository();
+    private final AccountService accountService =
+            new AccountService();
 
     private final TransactionDatabaseRepository transactionDatabaseRepository =
             new TransactionDatabaseRepository();
 
     private final CustomerDatabaseRepository customerDatabaseRepository =
             new CustomerDatabaseRepository();
-
 
 
     // ==========================================
@@ -97,7 +95,7 @@ public class TransactionService {
             throws SQLException {
 
         boolean balanceUpdated =
-                accountDatabaseRepository.updateBalance(
+                accountService.updateBalance(
                         connection,
                         account.getAccountNumber(),
                         newBalance
@@ -199,7 +197,7 @@ public class TransactionService {
             throws SQLException {
 
         boolean balanceUpdated =
-                accountDatabaseRepository.updateBalance(
+                accountService.updateBalance(
                         connection,
                         account.getAccountNumber(),
                         newBalance
@@ -288,15 +286,30 @@ public class TransactionService {
     public void transferMoney(
             Customer sender,
             int recipientAccountNumber,
-            double amount)
-            throws SQLException {
+            double amount) {
 
-        Customer recipient =
-                customerDatabaseRepository
-                        .findCustomerByAccountNumberExcludingSender(
-                                recipientAccountNumber,
-                                sender
-                        );
+        Customer recipient;
+
+        try {
+
+            recipient =
+                    customerDatabaseRepository
+                            .findCustomerByAccountNumberExcludingSender(
+                                    recipientAccountNumber,
+                                    sender
+                            );
+
+        } catch (SQLException e) {
+
+            System.out.println();
+            System.out.println(
+                    "Unable to find recipient account."
+            );
+
+            e.printStackTrace();
+
+            return;
+        }
 
         if (recipient == null) {
 
@@ -350,7 +363,7 @@ public class TransactionService {
                 // ======================================
 
                 boolean senderUpdated =
-                        accountDatabaseRepository.updateBalance(
+                        accountService.updateBalance(
                                 connection,
                                 senderAccount.getAccountNumber(),
                                 senderNewBalance
@@ -369,7 +382,7 @@ public class TransactionService {
                 // ======================================
 
                 boolean recipientUpdated =
-                        accountDatabaseRepository.updateBalance(
+                        accountService.updateBalance(
                                 connection,
                                 recipientAccount.getAccountNumber(),
                                 recipientNewBalance
@@ -486,75 +499,5 @@ public class TransactionService {
             e.printStackTrace();
         }
     }
-    public boolean changePin(
-            Customer customer,
-            String newPin) {
 
-        BankAccount account =
-                customer.getAccount();
-
-        try (Connection connection =
-                     DatabaseConnection.getConnection()) {
-
-            connection.setAutoCommit(false);
-
-            try {
-
-                boolean updated =
-                        accountDatabaseRepository.updatePin(
-                                connection,
-                                account.getAccountNumber(),
-                                newPin
-                        );
-
-                if (!updated) {
-
-                    connection.rollback();
-
-                    System.out.println();
-                    System.out.println(
-                            "PIN could not be updated."
-                    );
-
-                    return false;
-                }
-
-                connection.commit();
-
-                // Update Java object only AFTER
-                // database update succeeds.
-                account.setPin(newPin);
-
-                return true;
-
-            } catch (SQLException e) {
-
-                connection.rollback();
-
-                System.out.println();
-                System.out.println(
-                        "PIN change failed."
-                );
-
-                System.out.println(
-                        "Database transaction rolled back."
-                );
-
-                e.printStackTrace();
-
-                return false;
-            }
-
-        } catch (SQLException e) {
-
-            System.out.println();
-            System.out.println(
-                    "Database connection error."
-            );
-
-            e.printStackTrace();
-
-            return false;
         }
-    }
-}

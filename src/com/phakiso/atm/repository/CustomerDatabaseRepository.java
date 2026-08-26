@@ -253,7 +253,8 @@ public class CustomerDatabaseRepository {
     // SAVE CUSTOMER + ACCOUNT
     // ============================================================
 
-    public void saveCustomer(Customer customer) {
+    public void saveCustomer(Customer customer)
+            throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
@@ -288,14 +289,6 @@ public class CustomerDatabaseRepository {
 
                 throw e;
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Error saving customer to MySQL."
-            );
-
-            e.printStackTrace();
         }
     }
 

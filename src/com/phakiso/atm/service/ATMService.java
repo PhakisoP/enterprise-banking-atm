@@ -2,16 +2,16 @@ package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
-import com.phakiso.atm.repository.AccountDatabaseRepository;
 import java.sql.SQLException;
+
 
 import java.util.Scanner;
 
 public class ATMService {
 
     private final TransactionService transactionService;
-    private final AccountDatabaseRepository accountDatabaseRepository =
-            new AccountDatabaseRepository();
+    private final AccountService accountService =
+            new AccountService();
 
     public ATMService() {
 
@@ -130,7 +130,8 @@ public class ATMService {
 
     public void changePin(
             Customer customer,
-            Scanner scanner) {
+            Scanner scanner)
+            throws SQLException {
 
         BankAccount account =
                 customer.getAccount();
@@ -204,7 +205,7 @@ public class ATMService {
         // ==========================================
 
         boolean updated =
-                accountDatabaseRepository.updatePin(
+                accountService.updatePin(
                         account.getAccountNumber(),
                         newPin
                 );

@@ -3,10 +3,11 @@ package com.phakiso.atm.app;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.repository.CustomerDatabaseRepository;
+import java.sql.SQLException;
 
 public class DatabaseCustomerMigrationTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         System.out.println();
         System.out.println("========================================");
