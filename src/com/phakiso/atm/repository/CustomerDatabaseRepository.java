@@ -116,13 +116,6 @@ public class CustomerDatabaseRepository {
             WHERE email = ?
             """;
 
-    private static final String ACCOUNT_NUMBER_EXISTS_SQL =
-            """
-            SELECT 1
-            FROM accounts
-            WHERE account_number = ?
-            """;
-
 
     private static final String FIND_CUSTOMER_ID_BY_ACCOUNT_SQL =
             """
@@ -230,24 +223,7 @@ public class CustomerDatabaseRepository {
         }
     }
 
-    public boolean accountNumberExists(int accountNumber)
-            throws SQLException {
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(
-                             ACCOUNT_NUMBER_EXISTS_SQL)) {
-
-            statement.setInt(1, accountNumber);
-
-            try (ResultSet resultSet =
-                         statement.executeQuery()) {
-
-                return resultSet.next();
-            }
-        }
-    }
 
     // ============================================================
     // SAVE CUSTOMER + ACCOUNT

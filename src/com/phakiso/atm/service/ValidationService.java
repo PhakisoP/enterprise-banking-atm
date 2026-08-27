@@ -1,6 +1,5 @@
 package com.phakiso.atm.service;
 
-import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.sql.SQLException;
@@ -8,8 +7,11 @@ import java.sql.SQLException;
 
 public class ValidationService {
 
-    private final CustomerDatabaseRepository customerDatabaseRepository =
-            new CustomerDatabaseRepository();
+    private final BankService bankService =
+            new BankService();
+
+    private final AccountService accountService =
+            new AccountService();
 
     public boolean isValidName(String name) {
         if (name == null || name.isBlank()) {
@@ -21,7 +23,7 @@ public class ValidationService {
     public boolean validateCustomerId(int customerId)
             throws SQLException {
 
-        if (customerDatabaseRepository.customerIdExists(customerId)) {
+        if (bankService.customerIdExists(customerId)) {
 
             System.out.println();
             System.out.println("Customer ID already exists!");
@@ -35,7 +37,7 @@ public class ValidationService {
     public boolean validateIdNumber(String idNumber)
             throws SQLException {
 
-        if (customerDatabaseRepository.idNumberExists(idNumber)) {
+        if (bankService.idNumberExists(idNumber)) {
 
             System.out.println();
             System.out.println(
@@ -51,7 +53,7 @@ public class ValidationService {
     public boolean validatePhoneNumber(String phoneNumber)
             throws SQLException {
 
-        if (customerDatabaseRepository.phoneNumberExists(phoneNumber)) {
+        if (bankService.phoneNumberExists(phoneNumber)) {
 
             System.out.println();
             System.out.println(
@@ -152,7 +154,7 @@ public class ValidationService {
     public boolean validateEmail(String email)
             throws SQLException {
 
-        if (customerDatabaseRepository.emailExists(email)) {
+        if (bankService.emailExists(email)) {
 
             System.out.println();
             System.out.println(
@@ -169,7 +171,7 @@ public class ValidationService {
     public boolean validateAccountNumber(int accountNumber)
             throws SQLException {
 
-        if (customerDatabaseRepository.accountNumberExists(accountNumber)) {
+        if (accountService.accountNumberExists(accountNumber)) {
 
             System.out.println();
             System.out.println(

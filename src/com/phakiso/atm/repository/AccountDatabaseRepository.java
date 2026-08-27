@@ -46,6 +46,12 @@ public class AccountDatabaseRepository {
             WHERE account_number = ?
             """;
 
+    private static final String ACCOUNT_NUMBER_EXISTS_SQL = """
+        SELECT 1
+        FROM accounts
+        WHERE account_number = ?
+        """;
+
 
     // ============================================================
     // UPDATE BALANCE
@@ -82,6 +88,30 @@ public class AccountDatabaseRepository {
             statement.setInt(2, accountNumber);
 
             return statement.executeUpdate() == 1;
+        }
+    }
+
+    // ============================================================
+// CHECK ACCOUNT NUMBER EXISTS
+// ============================================================
+
+    public boolean accountNumberExists(
+            int accountNumber)
+            throws SQLException {
+
+        try (Connection connection =
+                     DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(
+                             ACCOUNT_NUMBER_EXISTS_SQL)) {
+
+            statement.setInt(1, accountNumber);
+
+            try (ResultSet resultSet =
+                         statement.executeQuery()) {
+
+                return resultSet.next();
+            }
         }
     }
 

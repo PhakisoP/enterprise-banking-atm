@@ -1,16 +1,14 @@
 package com.phakiso.atm.service;
 
 import com.phakiso.atm.model.Customer;
-
-import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import java.sql.SQLException;
 
 import java.util.Scanner;
 
 public class AuthenticationService {
 
-    private final CustomerDatabaseRepository customerDatabaseRepository =
-            new CustomerDatabaseRepository();
+    private final BankService bankService =
+            new BankService();
 
     private final AccountService accountService =
             new AccountService();
@@ -148,10 +146,9 @@ public class AuthenticationService {
                 scanner.nextInt();
 
         Customer customer =
-                customerDatabaseRepository
-                        .findCustomerByAccountNumber(
-                                accountNumber
-                        );
+                bankService.findCustomer(
+                        accountNumber
+                );
 
         if (customer == null) {
 

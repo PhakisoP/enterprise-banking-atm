@@ -3,7 +3,6 @@ package com.phakiso.atm.service;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.model.Transaction;
-import com.phakiso.atm.repository.CustomerDatabaseRepository;
 import com.phakiso.atm.repository.TransactionDatabaseRepository;
 import com.phakiso.atm.util.DatabaseConnection;
 
@@ -19,9 +18,8 @@ public class TransactionService {
     private final TransactionDatabaseRepository transactionDatabaseRepository =
             new TransactionDatabaseRepository();
 
-    private final CustomerDatabaseRepository customerDatabaseRepository =
-            new CustomerDatabaseRepository();
-
+    private final BankService bankService =
+            new BankService();
 
     // ==========================================
     // DEPOSIT
@@ -87,34 +85,7 @@ public class TransactionService {
         }
     }
 
-    private void executeDepositTransaction(
-            Connection connection,
-            BankAccount account,
-            double amount,
-            double newBalance)
-            throws SQLException {
 
-        boolean balanceUpdated =
-                accountService.updateBalance(
-                        connection,
-                        account.getAccountNumber(),
-                        newBalance
-                );
-
-        if (!balanceUpdated) {
-            throw new SQLException(
-                    "Account balance could not be updated."
-            );
-        }
-
-        transactionDatabaseRepository.saveTransaction(
-                connection,
-                account,
-                "Deposit",
-                amount,
-                newBalance
-        );
-    }
 
 
     // ==========================================
@@ -293,7 +264,7 @@ public class TransactionService {
         try {
 
             recipient =
-                    customerDatabaseRepository
+                    bankService
                             .findCustomerByAccountNumberExcludingSender(
                                     recipientAccountNumber,
                                     sender

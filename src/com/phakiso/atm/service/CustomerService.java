@@ -8,7 +8,6 @@ public class CustomerService {
 
     private final AuthenticationService authenticationService;
     private final ATMService atmService;
-    private final TransactionService transactionService;
     private final Scanner scanner;
 
     public CustomerService() {
@@ -21,8 +20,6 @@ public class CustomerService {
         this.atmService =
                 new ATMService();
 
-        this.transactionService =
-                new TransactionService();
     }
 
 
@@ -78,19 +75,15 @@ public class CustomerService {
                     break;
 
                 case 2:
-                    System.out.print("Enter deposit amount: R");
-                    double depositAmount = scanner.nextDouble();
-                    transactionService.deposit(customer, depositAmount);
+                    atmService.deposit(customer, scanner);
                     break;
 
                 case 3:
-                    System.out.print("Enter withdrawal amount: R");
-                    double withdrawalAmount = scanner.nextDouble();
-                    transactionService.withdraw(customer, withdrawalAmount);
+                    atmService.withdraw(customer, scanner);
                     break;
 
                 case 4:
-                    transactionService.displayMiniStatement(customer);
+                    atmService.miniStatement(customer);
                     break;
 
                 case 5:
@@ -98,18 +91,7 @@ public class CustomerService {
                     break;
 
                 case 6:
-
-                    System.out.print("Recipient Account Number: ");
-                    int accountNumber = scanner.nextInt();
-
-                    System.out.print("Amount: R");
-                    double amount = scanner.nextDouble();
-
-                    transactionService.transferMoney(
-                            customer,
-                            accountNumber,
-                            amount
-                    );
+                    atmService.transferMoney(customer, scanner);
                     break;
 
                 case 7:

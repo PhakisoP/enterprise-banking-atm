@@ -24,6 +24,41 @@ public class BankService {
     }
 
 
+    public boolean customerIdExists(int customerId)
+            throws SQLException {
+
+        return customerDatabaseRepository.customerIdExists(
+                customerId
+        );
+    }
+
+
+    public boolean idNumberExists(String idNumber)
+            throws SQLException {
+
+        return customerDatabaseRepository.idNumberExists(
+                idNumber
+        );
+    }
+
+
+    public boolean phoneNumberExists(String phoneNumber)
+            throws SQLException {
+
+        return customerDatabaseRepository.phoneNumberExists(
+                phoneNumber
+        );
+    }
+
+
+    public boolean emailExists(String email)
+            throws SQLException {
+
+        return customerDatabaseRepository.emailExists(
+                email
+        );
+    }
+
 
     public Customer createCustomer(
             int customerID,
@@ -63,6 +98,19 @@ public class BankService {
         return customerDatabaseRepository.findCustomerByAccountNumber(
                 accountNumber
         );
+    }
+
+
+    public Customer findCustomerByAccountNumberExcludingSender(
+            int accountNumber,
+            Customer sender)
+            throws SQLException {
+
+        return customerDatabaseRepository
+                .findCustomerByAccountNumberExcludingSender(
+                        accountNumber,
+                        sender
+                );
     }
 
 

@@ -70,6 +70,18 @@ public class AccountService {
         );
     }
 
+// ============================================================
+// ACCOUNT NUMBER EXISTS
+// ============================================================
+
+    public boolean accountNumberExists(
+            int accountNumber)
+            throws SQLException {
+
+        return accountDatabaseRepository.accountNumberExists(
+                accountNumber
+        );
+    }
 
     // ============================================================
     // LOGIN / ACCOUNT LOCKING
@@ -86,7 +98,7 @@ public class AccountService {
     public boolean updateFailedAttempts(
             int accountNumber,
             int failedAttempts)
-            throws SQLException{
+            throws SQLException {
 
         return accountDatabaseRepository.updateFailedAttempts(
                 accountNumber,
@@ -96,7 +108,7 @@ public class AccountService {
 
     public boolean lockAccount(
             int accountNumber)
-            throws SQLException{
+            throws SQLException {
 
         return accountDatabaseRepository.lockAccount(
                 accountNumber
@@ -115,7 +127,7 @@ public class AccountService {
 
     public boolean unlockAccount(
             int accountNumber)
-    throws SQLException {
+            throws SQLException {
 
         return accountDatabaseRepository.unlockAccount(
                 accountNumber

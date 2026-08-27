@@ -12,6 +12,8 @@ public class ATMService {
     private final TransactionService transactionService;
     private final AccountService accountService =
             new AccountService();
+    private final ValidationService validationService =
+            new ValidationService();
 
     public ATMService() {
 
@@ -171,12 +173,7 @@ public class ATMService {
         // VALIDATE PIN FORMAT
         // ==========================================
 
-        if (!newPin.matches("\\d{4}")) {
-
-            System.out.println(
-                    "PIN must contain exactly 4 digits."
-            );
-
+        if (!validationService.isValidPin(newPin)) {
             return;
         }
 
