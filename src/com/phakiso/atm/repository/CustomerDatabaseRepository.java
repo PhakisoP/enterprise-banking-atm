@@ -487,33 +487,7 @@ public class CustomerDatabaseRepository {
         }
     }
 
-    // ============================================================
-    // FIND CUSTOMER BY ACCOUNT NUMBER
-    // EXCLUDING SENDER
-    // ============================================================
 
-    public Customer findCustomerByAccountNumberExcludingSender(
-            int accountNumber,
-            Customer sender)
-            throws SQLException {
-
-        Customer customer =
-                findCustomerByAccountNumber(
-                        accountNumber
-                );
-
-        if (customer == null) {
-            return null;
-        }
-
-        if (customer.getCustomerId() ==
-                sender.getCustomerId()) {
-
-            return null;
-        }
-
-        return customer;
-    }
 
 // ============================================================
 // FIND ALL CUSTOMERS

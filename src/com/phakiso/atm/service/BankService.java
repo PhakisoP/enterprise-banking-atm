@@ -101,18 +101,6 @@ public class BankService {
     }
 
 
-    public Customer findCustomerByAccountNumberExcludingSender(
-            int accountNumber,
-            Customer sender)
-            throws SQLException {
-
-        return customerDatabaseRepository
-                .findCustomerByAccountNumberExcludingSender(
-                        accountNumber,
-                        sender
-                );
-    }
-
 
     public boolean deleteCustomer(int accountNumber)
             throws SQLException {

@@ -264,11 +264,9 @@ public class TransactionService {
         try {
 
             recipient =
-                    bankService
-                            .findCustomerByAccountNumberExcludingSender(
-                                    recipientAccountNumber,
-                                    sender
-                            );
+                    bankService.findCustomer(
+                            recipientAccountNumber
+                    );
 
         } catch (SQLException e) {
 
@@ -295,6 +293,17 @@ public class TransactionService {
 
             System.out.println(
                     "Transfer amount must be greater than zero."
+            );
+
+            return;
+        }
+
+        if (recipient.getCustomerId() ==
+                sender.getCustomerId()) {
+
+            System.out.println();
+            System.out.println(
+                    "You cannot transfer money to your own account."
             );
 
             return;
