@@ -84,42 +84,6 @@ public class BankAccount implements Serializable {
     }
 
 
-    public void deposit(double amount) {
-
-        if (amount <= 0) {
-            System.out.println("Deposit amount must be greater than zero.");
-            return;
-        }
-
-        balance += amount;
-
-        transactions.add(new Transaction("Deposit", amount));
-
-        System.out.println("Deposit Successful!");
-        System.out.println("Amount Deposited : R" + amount);
-        System.out.println("New Balance      : R" + balance);
-
-    }
-
-    public void withdraw(double amount) {
-        if (amount <= 0) {
-            System.out.println("Withdrawal amount must be greater than zero.");
-            return;
-        }
-
-        if (amount > balance) {
-            System.out.println("Insufficient funds.");
-            return;
-        }
-
-        balance -= amount;
-
-        transactions.add(new Transaction("Withdrawal", amount));
-
-        System.out.println("Withdrawal Successful!");
-        System.out.println("Amount Withdrawn : R" + amount);
-        System.out.println("New Balance      : R" + balance);
-    }
 
     // ============================================================
     // INTERNAL BALANCE SYNCHRONIZATION

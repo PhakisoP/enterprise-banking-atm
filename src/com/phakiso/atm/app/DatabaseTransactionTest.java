@@ -28,7 +28,7 @@ public class DatabaseTransactionTest {
         System.out.println();
         System.out.println("Saving deposit transaction...");
 
-        account.deposit(1000.00);
+        account.increaseBalanceSilently(1000.00);
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
