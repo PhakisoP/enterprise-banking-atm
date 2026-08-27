@@ -8,7 +8,6 @@ public class CustomerService {
 
     private final AuthenticationService authenticationService;
     private final ATMService atmService;
-    private final TransactionService transactionService;
     private final Scanner scanner;
 
     public CustomerService(Scanner scanner) {
@@ -20,9 +19,6 @@ public class CustomerService {
 
         this.atmService =
                 new ATMService();
-
-        this.transactionService =
-                new TransactionService();
     }
 
 
@@ -88,7 +84,6 @@ public class CustomerService {
                 case 4:
                     atmService.miniStatement(customer);
                     break;
-
                 case 5:
                     atmService.changePin(customer, scanner);
                     break;
