@@ -317,7 +317,7 @@ public class AdminService {
                             new AuthenticationService(scanner);
 
                     CustomerService customerService =
-                            new CustomerService();
+                            new CustomerService(scanner);
 
                     while (true) {
 

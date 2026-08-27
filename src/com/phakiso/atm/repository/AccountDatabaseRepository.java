@@ -166,31 +166,26 @@ public class AccountDatabaseRepository {
     public boolean unlockAccount(int accountNumber)
             throws SQLException {
 
-        return resetLoginState(
-                accountNumber,
-                "Error unlocking account."
-        );
+        return resetLoginState(accountNumber);
     }
+
 
 
     // ============================================================
     // RESET LOGIN ATTEMPTS
     // ============================================================
 
-    public boolean resetLoginAttempts(int accountNumber)
-            throws SQLException {
+public boolean resetLoginAttempts(int accountNumber)
+        throws SQLException {
 
-        return resetLoginState(
-                accountNumber,
-                "Error resetting login attempts."
-        );
-    }
+    return resetLoginState(accountNumber);
+}
 
 
-    private boolean resetLoginState(
-            int accountNumber,
-            String errorMessage)
-            throws SQLException {
+
+private boolean resetLoginState(
+        int accountNumber)
+        throws SQLException {
 
         try (Connection connection =
                      DatabaseConnection.getConnection();

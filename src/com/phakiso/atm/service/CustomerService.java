@@ -8,11 +8,12 @@ public class CustomerService {
 
     private final AuthenticationService authenticationService;
     private final ATMService atmService;
+    private final TransactionService transactionService;
     private final Scanner scanner;
 
-    public CustomerService() {
+    public CustomerService(Scanner scanner) {
 
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
 
         this.authenticationService =
                 new AuthenticationService(scanner);
@@ -20,6 +21,8 @@ public class CustomerService {
         this.atmService =
                 new ATMService();
 
+        this.transactionService =
+                new TransactionService();
     }
 
 
