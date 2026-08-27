@@ -68,7 +68,7 @@ public class ValidationService {
 
     public boolean isValidIdNumber(String idNumber) {
 
-        if (!idNumber.matches("\\d{13}")) {
+        if (idNumber == null || !idNumber.matches("\\d{13}")) {
             System.out.println();
             System.out.println("ID Number must contain exactly 13 digits!");
             return false;
@@ -208,7 +208,8 @@ public class ValidationService {
 
     public boolean isValidAccountType(String accountType) {
 
-        if (!(accountType.equalsIgnoreCase("Savings")
+        if (accountType == null
+                || !(accountType.equalsIgnoreCase("Savings")
                 || accountType.equalsIgnoreCase("Current")
                 || accountType.equalsIgnoreCase("Credit"))) {
 
