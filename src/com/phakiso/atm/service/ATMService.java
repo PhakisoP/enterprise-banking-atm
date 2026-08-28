@@ -43,7 +43,7 @@ public class ATMService {
 
     public void deposit(
             Customer customer,
-            Scanner scanner) {
+            Scanner scanner) throws SQLException {
 
         System.out.print(
                 "Enter deposit amount: R"
@@ -65,7 +65,7 @@ public class ATMService {
 
     public void withdraw(
             Customer customer,
-            Scanner scanner) {
+            Scanner scanner) throws SQLException {
 
         System.out.print(
                 "Enter withdrawal amount: R"
@@ -86,7 +86,7 @@ public class ATMService {
     // ==========================================
 
     public void miniStatement(
-            Customer customer) {
+            Customer customer) throws SQLException {
 
         transactionService.displayMiniStatement(
                 customer

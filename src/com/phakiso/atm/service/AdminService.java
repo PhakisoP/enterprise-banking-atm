@@ -329,7 +329,9 @@ public class AdminService {
             System.out.println("----------------------------------------");
         }
     }
-    public void unlockAccount() {
+
+
+    public void unlockAccount() throws SQLException {
 
         System.out.println();
         System.out.println("================================");
@@ -341,26 +343,10 @@ public class AdminService {
         int accountNumber =
                 scanner.nextInt();
 
-        boolean unlocked;
-
-        try {
-
-            unlocked =
-                    accountService.unlockAccount(
-                            accountNumber
-                    );
-
-        } catch (SQLException e) {
-
-            System.out.println();
-            System.out.println(
-                    "Unable to unlock account because of a database error."
-            );
-
-            e.printStackTrace();
-
-            return;
-        }
+        boolean unlocked =
+                accountService.unlockAccount(
+                        accountNumber
+                );
 
         if (unlocked) {
 
@@ -381,6 +367,7 @@ public class AdminService {
             );
         }
     }
+
 
     public void displayAdminMenu() throws SQLException {
 

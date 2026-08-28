@@ -24,7 +24,7 @@ public class TransactionService {
 
     /**
      * Executes database work inside a JDBC transaction.
-     *
+     * <p>
      * The transaction is committed when the operation completes
      * successfully. If a SQLException occurs, the transaction
      * is rolled back.
@@ -62,17 +62,18 @@ public class TransactionService {
 
     /**
      * Deposits money into a customer's account.
-     *
+     * <p>
      * The database balance and transaction record are written
      * within the same database transaction. The in-memory account
      * is updated only after the database transaction succeeds.
      *
      * @param customer customer making the deposit
-     * @param amount amount to deposit
+     * @param amount   amount to deposit
+     * @throws SQLException if the database operation fails
      */
     public void deposit(
             Customer customer,
-            double amount) {
+            double amount) throws SQLException {
 
         // The deposit amount must be greater than zero.
         if (amount <= 0) {
@@ -90,68 +91,46 @@ public class TransactionService {
         double newBalance =
                 account.getBalance() + amount;
 
-        try {
+        executeInTransaction(connection -> {
 
-            /*
-             * Execute the balance update and transaction recording
-             * inside one database transaction.
-             */
-            executeInTransaction(connection -> {
-
-                executeTransaction(
-                        connection,
-                        account,
-                        "Deposit",
-                        amount,
-                        newBalance
-                );
-            });
-
-            /*
-             * Only update the Java object after the database
-             * transaction has successfully committed.
-             */
-            account.increaseBalanceSilently(amount);
-
-            System.out.println(
-                    "Deposit completed successfully."
+            executeTransaction(
+                    connection,
+                    account,
+                    "Deposit",
+                    amount,
+                    newBalance
             );
+        });
 
-        } catch (SQLException e) {
+        // Update the Java object only after the database
+        // transaction has successfully committed.
+        account.increaseBalanceSilently(amount);
 
-            /*
-             * executeInTransaction() has already rolled back
-             * the database transaction if a SQL error occurred.
-             */
-            System.out.println();
-            System.out.println(
-                    "Deposit failed. Database transaction rolled back."
-            );
-
-            e.printStackTrace();
-        }
+        System.out.println(
+                "Deposit completed successfully."
+        );
     }
-
-
 
 
     // ==========================================
 // WITHDRAWAL
 // ==========================================
 
+
     /**
      * Withdraws money from a customer's account.
-     *
+     * <p>
      * The database balance and transaction record are written
      * within the same database transaction. The in-memory account
      * is updated only after the database transaction succeeds.
      *
      * @param customer customer making the withdrawal
-     * @param amount amount to withdraw
+     * @param amount   amount to withdraw
+     * @throws SQLException if the database operation fails
      */
     public void withdraw(
             Customer customer,
-            double amount) {
+            double amount) throws SQLException {
 
         // The withdrawal amount must be greater than zero.
         if (amount <= 0) {
@@ -166,8 +145,8 @@ public class TransactionService {
         BankAccount account =
                 customer.getAccount();
 
-        // The customer cannot withdraw more money
-        // than is currently available in the account.
+        // The customer cannot withdraw more money than
+        // the current account balance.
         if (amount > account.getBalance()) {
 
             System.out.println(
@@ -180,46 +159,24 @@ public class TransactionService {
         double newBalance =
                 account.getBalance() - amount;
 
-        try {
+        executeInTransaction(connection -> {
 
-            /*
-             * Execute the balance update and transaction recording
-             * inside one database transaction.
-             */
-            executeInTransaction(connection -> {
-
-                executeTransaction(
-                        connection,
-                        account,
-                        "Withdrawal",
-                        amount,
-                        newBalance
-                );
-            });
-
-            /*
-             * Only update the Java object after the database
-             * transaction has successfully committed.
-             */
-            account.decreaseBalanceSilently(amount);
-
-            System.out.println(
-                    "Withdrawal completed successfully."
+            executeTransaction(
+                    connection,
+                    account,
+                    "Withdrawal",
+                    amount,
+                    newBalance
             );
+        });
 
-        } catch (SQLException e) {
+        // Update the Java object only after the database
+        // transaction has successfully committed.
+        account.decreaseBalanceSilently(amount);
 
-            /*
-             * executeInTransaction() has already rolled back
-             * the database transaction if a SQL error occurred.
-             */
-            System.out.println();
-            System.out.println(
-                    "Withdrawal failed. Database transaction rolled back."
-            );
-
-            e.printStackTrace();
-        }
+        System.out.println(
+                "Withdrawal completed successfully."
+        );
     }
 
 
@@ -257,15 +214,21 @@ public class TransactionService {
     // MINI STATEMENT
     // ==========================================
 
-    public void displayMiniStatement(Customer customer) {
+    /**
+     * Displays the five most recent transactions for a customer's account.
+     *
+     * This is a read-only database operation, so no explicit
+     * database transaction is required.
+     *
+     * @param customer customer whose transactions should be displayed
+     * @throws SQLException if the transaction history cannot be retrieved
+     */
+    public void displayMiniStatement(
+            Customer customer)
+            throws SQLException {
 
         BankAccount account =
                 customer.getAccount();
-
-        System.out.println();
-        System.out.println("==============================");
-        System.out.println("      MINI STATEMENT");
-        System.out.println("==============================");
 
         try (Connection connection =
                      DatabaseConnection.getConnection()) {
@@ -295,21 +258,15 @@ public class TransactionService {
                     );
                 }
             }
-
-        } catch (SQLException e) {
-
-            System.out.println(
-                    "Unable to retrieve transaction history."
-            );
-
-            e.printStackTrace();
         }
 
         System.out.println("------------------------------");
+
         System.out.println(
                 "Current Balance : R" +
                         account.getBalance()
         );
+
         System.out.println("==============================");
     }
 
@@ -318,34 +275,41 @@ public class TransactionService {
     // TRANSFER
     // ==========================================
 
+    /**
+     * Transfers money from one customer's account to another account.
+     * <p>
+     * The sender and recipient balance updates, together with both
+     * transaction records, are executed inside one database transaction.
+     * <p>
+     * If any database operation fails, executeInTransaction() rolls
+     * the entire transaction back.
+     * <p>
+     * The Java account objects are updated only after the database
+     * transaction has successfully committed.
+     *
+     * @param sender                 customer sending the money
+     * @param recipientAccountNumber account number receiving the money
+     * @param amount                 amount to transfer
+     * @throws SQLException if the database operation fails
+     */
     public void transferMoney(
             Customer sender,
             int recipientAccountNumber,
-            double amount) {
+            double amount)
+            throws SQLException {
 
-        Customer recipient;
+        // ==========================================
+        // FIND RECIPIENT
+        // ==========================================
 
-        try {
-
-            recipient =
-                    bankService.findCustomer(
-                            recipientAccountNumber
-                    );
-
-        } catch (SQLException e) {
-
-            System.out.println();
-            System.out.println(
-                    "Unable to find recipient account."
-            );
-
-            e.printStackTrace();
-
-            return;
-        }
+        Customer recipient =
+                bankService.findCustomer(
+                        recipientAccountNumber
+                );
 
         if (recipient == null) {
 
+            System.out.println();
             System.out.println(
                     "Recipient account not found."
             );
@@ -353,14 +317,25 @@ public class TransactionService {
             return;
         }
 
+
+        // ==========================================
+        // VALIDATE TRANSFER AMOUNT
+        // ==========================================
+
         if (amount <= 0) {
 
+            System.out.println();
             System.out.println(
                     "Transfer amount must be greater than zero."
             );
 
             return;
         }
+
+
+        // ==========================================
+        // PREVENT SELF-TRANSFER
+        // ==========================================
 
         if (recipient.getCustomerId() ==
                 sender.getCustomerId()) {
@@ -373,14 +348,25 @@ public class TransactionService {
             return;
         }
 
+
+        // ==========================================
+        // GET ACCOUNTS
+        // ==========================================
+
         BankAccount senderAccount =
                 sender.getAccount();
 
         BankAccount recipientAccount =
                 recipient.getAccount();
 
+
+        // ==========================================
+        // CHECK AVAILABLE BALANCE
+        // ==========================================
+
         if (amount > senderAccount.getBalance()) {
 
+            System.out.println();
             System.out.println(
                     "Insufficient funds."
             );
@@ -388,6 +374,9 @@ public class TransactionService {
             return;
         }
 
+
+        // Calculate the balances that will exist
+        // after the transfer succeeds.
         double senderNewBalance =
                 senderAccount.getBalance() - amount;
 
@@ -395,152 +384,144 @@ public class TransactionService {
                 recipientAccount.getBalance() + amount;
 
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection()) {
+        // ==========================================
+        // EXECUTE DATABASE TRANSACTION
+        // ==========================================
 
-            connection.setAutoCommit(false);
+        /*
+         * The complete transfer is treated as one
+         * atomic database transaction.
+         *
+         * If any operation inside this block fails,
+         * executeInTransaction() will roll back
+         * everything.
+         */
+        executeInTransaction(connection -> {
 
-            try {
+            // ======================================
+            // UPDATE SENDER BALANCE
+            // ======================================
 
-                // ======================================
-                // UPDATE SENDER
-                // ======================================
-
-                boolean senderUpdated =
-                        accountService.updateBalance(
-                                connection,
-                                senderAccount.getAccountNumber(),
-                                senderNewBalance
-                        );
-
-                if (!senderUpdated) {
-
-                    throw new SQLException(
-                            "Sender account balance could not be updated."
+            boolean senderUpdated =
+                    accountService.updateBalance(
+                            connection,
+                            senderAccount.getAccountNumber(),
+                            senderNewBalance
                     );
-                }
 
+            if (!senderUpdated) {
 
-                // ======================================
-                // UPDATE RECIPIENT
-                // ======================================
-
-                boolean recipientUpdated =
-                        accountService.updateBalance(
-                                connection,
-                                recipientAccount.getAccountNumber(),
-                                recipientNewBalance
-                        );
-
-                if (!recipientUpdated) {
-
-                    throw new SQLException(
-                            "Recipient account balance could not be updated."
-                    );
-                }
-
-
-                // ======================================
-                // SAVE SENDER TRANSACTION
-                // ======================================
-
-                transactionDatabaseRepository.saveTransaction(
-                        connection,
-                        senderAccount,
-                        "Transfer Out",
-                        amount,
-                        senderNewBalance
+                throw new SQLException(
+                        "Sender account balance could not be updated."
                 );
-
-                // ======================================
-                // SAVE RECIPIENT TRANSACTION
-                // ======================================
-
-                transactionDatabaseRepository.saveTransaction(
-                        connection,
-                        recipientAccount,
-                        "Transfer In",
-                        amount,
-                        recipientNewBalance
-                );
-
-
-                // ======================================
-                // COMMIT
-                // ======================================
-
-                connection.commit();
-
-                // Update Java objects silently after successful commit
-                senderAccount.decreaseBalanceSilently(amount);
-                recipientAccount.increaseBalanceSilently(amount);
-
-
-                System.out.println();
-
-                System.out.println(
-                        "=============================="
-                );
-
-                System.out.println(
-                        "       TRANSFER SUCCESSFUL"
-                );
-
-                System.out.println(
-                        "=============================="
-                );
-
-                System.out.println();
-
-                System.out.printf(
-                        "From Account      : %d%n",
-                        senderAccount.getAccountNumber()
-                );
-
-                System.out.printf(
-                        "Recipient Account : %d%n",
-                        recipientAccount.getAccountNumber()
-                );
-
-                System.out.printf(
-                        "Amount            : R%.2f%n",
-                        amount
-                );
-
-                System.out.printf(
-                        "New Balance       : R%.2f%n",
-                        senderAccount.getBalance()
-                );
-
-                System.out.println();
-
-                System.out.println(
-                        "=============================="
-                );
-
-            } catch (SQLException e) {
-
-                connection.rollback();
-
-                System.out.println();
-                System.out.println(
-                        "Transfer failed."
-                );
-
-                System.out.println(
-                        "Database transaction rolled back."
-                );
-
-                e.printStackTrace();
             }
 
-        } catch (SQLException e) {
 
-            System.out.println(
-                    "Database connection error."
+            // ======================================
+            // UPDATE RECIPIENT BALANCE
+            // ======================================
+
+            boolean recipientUpdated =
+                    accountService.updateBalance(
+                            connection,
+                            recipientAccount.getAccountNumber(),
+                            recipientNewBalance
+                    );
+
+            if (!recipientUpdated) {
+
+                throw new SQLException(
+                        "Recipient account balance could not be updated."
+                );
+            }
+
+
+            // ======================================
+            // SAVE SENDER TRANSACTION
+            // ======================================
+
+            transactionDatabaseRepository.saveTransaction(
+                    connection,
+                    senderAccount,
+                    "Transfer Out",
+                    amount,
+                    senderNewBalance
             );
 
-            e.printStackTrace();
-        }
+
+            // ======================================
+            // SAVE RECIPIENT TRANSACTION
+            // ======================================
+
+            transactionDatabaseRepository.saveTransaction(
+                    connection,
+                    recipientAccount,
+                    "Transfer In",
+                    amount,
+                    recipientNewBalance
+            );
+        });
+
+
+        // ==========================================
+        // UPDATE JAVA OBJECTS
+        // ==========================================
+
+        /*
+         * The database transaction has successfully
+         * committed at this point.
+         *
+         * Only now do we update the in-memory objects.
+         */
+        senderAccount.decreaseBalanceSilently(amount);
+
+        recipientAccount.increaseBalanceSilently(amount);
+
+
+        // ==========================================
+        // DISPLAY SUCCESS MESSAGE
+        // ==========================================
+
+        System.out.println();
+
+        System.out.println(
+                "=============================="
+        );
+
+        System.out.println(
+                "       TRANSFER SUCCESSFUL"
+        );
+
+        System.out.println(
+                "=============================="
+        );
+
+        System.out.println();
+
+        System.out.printf(
+                "From Account      : %d%n",
+                senderAccount.getAccountNumber()
+        );
+
+        System.out.printf(
+                "Recipient Account : %d%n",
+                recipientAccount.getAccountNumber()
+        );
+
+        System.out.printf(
+                "Amount            : R%.2f%n",
+                amount
+        );
+
+        System.out.printf(
+                "New Balance       : R%.2f%n",
+                senderAccount.getBalance()
+        );
+
+        System.out.println();
+
+        System.out.println(
+                "=============================="
+        );
     }
-        }
+}
