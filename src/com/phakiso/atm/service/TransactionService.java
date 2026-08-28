@@ -21,16 +21,66 @@ public class TransactionService {
     private final BankService bankService =
             new BankService();
 
-    // ==========================================
-    // DEPOSIT
-    // ==========================================
 
-    public void deposit(Customer customer, double amount) {
+    /**
+     * Executes database work inside a JDBC transaction.
+     *
+     * The transaction is committed when the operation completes
+     * successfully. If a SQLException occurs, the transaction
+     * is rolled back.
+     *
+     * @param transaction database operation to execute
+     */
+    private void executeInTransaction(
+            DatabaseTransaction transaction)
+            throws SQLException {
 
+        try (Connection connection =
+                     DatabaseConnection.getConnection()) {
+
+            connection.setAutoCommit(false);
+
+            try {
+
+                transaction.execute(connection);
+
+                connection.commit();
+
+            } catch (SQLException e) {
+
+                connection.rollback();
+
+                throw e;
+            }
+        }
+    }
+
+
+// ==========================================
+// DEPOSIT
+// ==========================================
+
+    /**
+     * Deposits money into a customer's account.
+     *
+     * The database balance and transaction record are written
+     * within the same database transaction. The in-memory account
+     * is updated only after the database transaction succeeds.
+     *
+     * @param customer customer making the deposit
+     * @param amount amount to deposit
+     */
+    public void deposit(
+            Customer customer,
+            double amount) {
+
+        // The deposit amount must be greater than zero.
         if (amount <= 0) {
+
             System.out.println(
                     "Deposit amount must be greater than zero."
             );
+
             return;
         }
 
@@ -40,12 +90,13 @@ public class TransactionService {
         double newBalance =
                 account.getBalance() + amount;
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection()) {
+        try {
 
-            connection.setAutoCommit(false);
-
-            try {
+            /*
+             * Execute the balance update and transaction recording
+             * inside one database transaction.
+             */
+            executeInTransaction(connection -> {
 
                 executeTransaction(
                         connection,
@@ -54,31 +105,27 @@ public class TransactionService {
                         amount,
                         newBalance
                 );
+            });
 
-                connection.commit();
+            /*
+             * Only update the Java object after the database
+             * transaction has successfully committed.
+             */
+            account.increaseBalanceSilently(amount);
 
-                // Update Java object only after successful commit
-                account.increaseBalanceSilently(amount);
-
-                System.out.println(
-                        "Deposit completed successfully."
-                );
-
-            } catch (SQLException e) {
-
-                connection.rollback();
-
-                System.out.println(
-                        "Deposit failed. Database transaction rolled back."
-                );
-
-                e.printStackTrace();
-            }
+            System.out.println(
+                    "Deposit completed successfully."
+            );
 
         } catch (SQLException e) {
 
+            /*
+             * executeInTransaction() has already rolled back
+             * the database transaction if a SQL error occurred.
+             */
+            System.out.println();
             System.out.println(
-                    "Database connection error."
+                    "Deposit failed. Database transaction rolled back."
             );
 
             e.printStackTrace();
@@ -89,37 +136,57 @@ public class TransactionService {
 
 
     // ==========================================
-    // WITHDRAWAL
-    // ==========================================
+// WITHDRAWAL
+// ==========================================
 
-    public void withdraw(Customer customer, double amount) {
+    /**
+     * Withdraws money from a customer's account.
+     *
+     * The database balance and transaction record are written
+     * within the same database transaction. The in-memory account
+     * is updated only after the database transaction succeeds.
+     *
+     * @param customer customer making the withdrawal
+     * @param amount amount to withdraw
+     */
+    public void withdraw(
+            Customer customer,
+            double amount) {
 
+        // The withdrawal amount must be greater than zero.
         if (amount <= 0) {
+
             System.out.println(
                     "Withdrawal amount must be greater than zero."
             );
+
             return;
         }
 
         BankAccount account =
                 customer.getAccount();
 
+        // The customer cannot withdraw more money
+        // than is currently available in the account.
         if (amount > account.getBalance()) {
+
             System.out.println(
                     "Insufficient funds."
             );
+
             return;
         }
 
         double newBalance =
                 account.getBalance() - amount;
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection()) {
+        try {
 
-            connection.setAutoCommit(false);
-
-            try {
+            /*
+             * Execute the balance update and transaction recording
+             * inside one database transaction.
+             */
+            executeInTransaction(connection -> {
 
                 executeTransaction(
                         connection,
@@ -128,36 +195,33 @@ public class TransactionService {
                         amount,
                         newBalance
                 );
+            });
 
-                connection.commit();
+            /*
+             * Only update the Java object after the database
+             * transaction has successfully committed.
+             */
+            account.decreaseBalanceSilently(amount);
 
-                // Update Java object after successful commit
-                account.decreaseBalanceSilently(amount);
-
-                System.out.println(
-                        "Withdrawal completed successfully."
-                );
-
-            } catch (SQLException e) {
-
-                connection.rollback();
-
-                System.out.println(
-                        "Withdrawal failed. Database transaction rolled back."
-                );
-
-                e.printStackTrace();
-            }
+            System.out.println(
+                    "Withdrawal completed successfully."
+            );
 
         } catch (SQLException e) {
 
+            /*
+             * executeInTransaction() has already rolled back
+             * the database transaction if a SQL error occurred.
+             */
+            System.out.println();
             System.out.println(
-                    "Database connection error."
+                    "Withdrawal failed. Database transaction rolled back."
             );
 
             e.printStackTrace();
         }
     }
+
 
     private void executeTransaction(
             Connection connection,
