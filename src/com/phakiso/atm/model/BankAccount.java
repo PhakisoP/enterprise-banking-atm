@@ -1,9 +1,17 @@
 package com.phakiso.atm.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * Represents a customer's bank account.
+ *
+ * The BankAccount model stores account information and provides
+ * basic account-related behaviour such as PIN validation and
+ * in-memory balance synchronization.
+ *
+ * Database persistence is handled by the repository and service
+ * layers rather than by this model.
+ */
 public class BankAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -12,11 +20,6 @@ public class BankAccount implements Serializable {
     private String accountType;
     private double balance;
     private String pin;
-
-    private int failedAttempts;
-    private boolean locked;
-
-    private List<Transaction> transactions = new ArrayList<>();
 
     public BankAccount(int accountNumber,
                        String accountType,
@@ -45,52 +48,26 @@ public class BankAccount implements Serializable {
         return pin;
     }
 
-
     public void setPin(String pin) {
         this.pin = pin;
     }
 
-    public int getFailedAttempts() {
-        return failedAttempts;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setFailedAttempts(int failedAttempts) {
-        this.failedAttempts = failedAttempts;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
-    public void incrementFailedAttempts() {
-        failedAttempts++;
-    }
-
-    public void resetFailedAttempts() {
-        failedAttempts = 0;
-    }
-
-    public void lockAccount() {
-        locked = true;
-    }
-
-    public void unlockAccount() {
-        locked = false;
-        failedAttempts = 0;
-    }
-
-
-
     // ============================================================
     // INTERNAL BALANCE SYNCHRONIZATION
-    // Used by transfers after the database transaction commits.
-    // These methods do not print messages or create transactions.
+    //
+    // These methods update the in-memory account balance only.
+    // Database persistence is handled by the service/repository
+    // layers.
     // ============================================================
 
+    /**
+     * Increases the in-memory balance without creating a
+     * transaction or displaying a message.
+     *
+     * This is used after a successful database transaction.
+     *
+     * @param amount amount to add to the balance
+     */
     public void increaseBalanceSilently(double amount) {
 
         if (amount <= 0) {
@@ -100,7 +77,14 @@ public class BankAccount implements Serializable {
         balance += amount;
     }
 
-
+    /**
+     * Decreases the in-memory balance without creating a
+     * transaction or displaying a message.
+     *
+     * This is used after a successful database transaction.
+     *
+     * @param amount amount to subtract from the balance
+     */
     public void decreaseBalanceSilently(double amount) {
 
         if (amount <= 0) {
@@ -110,12 +94,14 @@ public class BankAccount implements Serializable {
         balance -= amount;
     }
 
+    /**
+     * Validates a PIN against the account's current PIN.
+     *
+     * @param enteredPin PIN entered by the customer
+     * @return true when the supplied PIN matches the account PIN
+     */
     public boolean validatePin(String enteredPin) {
 
         return pin.equals(enteredPin);
-
-    }
-    public List<Transaction> getTransactions() {
-        return transactions;
     }
 }

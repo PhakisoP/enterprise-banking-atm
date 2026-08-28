@@ -542,17 +542,8 @@ public class CustomerDatabaseRepository {
                         )
                 );
 
-        account.setFailedAttempts(
-                resultSet.getInt(
-                        "failed_attempts"
-                )
-        );
 
-        account.setLocked(
-                resultSet.getBoolean(
-                        "is_locked"
-                )
-        );
+
 
         return new Customer(
                 resultSet.getInt(
