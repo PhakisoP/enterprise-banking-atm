@@ -7,11 +7,6 @@ import java.sql.SQLException;
 
 public class ValidationService {
 
-    private final BankService bankService =
-            new BankService();
-
-    private final AccountService accountService =
-            new AccountService();
 
     public boolean isValidName(String name) {
         if (name == null || name.isBlank()) {
@@ -20,51 +15,7 @@ public class ValidationService {
         return name.matches("[A-Za-z]+");
     }
 
-    public boolean validateCustomerId(int customerId)
-            throws SQLException {
 
-        if (bankService.customerIdExists(customerId)) {
-
-            System.out.println();
-            System.out.println("Customer ID already exists!");
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean validateIdNumber(String idNumber)
-            throws SQLException {
-
-        if (bankService.idNumberExists(idNumber)) {
-
-            System.out.println();
-            System.out.println(
-                    "A customer with this ID already exists!"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public boolean validatePhoneNumber(String phoneNumber)
-            throws SQLException {
-
-        if (bankService.phoneNumberExists(phoneNumber)) {
-
-            System.out.println();
-            System.out.println(
-                    "This Phone number is already linked to another customer!!"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
 
     public boolean isValidIdNumber(String idNumber) {
 
@@ -151,39 +102,7 @@ public class ValidationService {
     }
 
 
-    public boolean validateEmail(String email)
-            throws SQLException {
 
-        if (bankService.emailExists(email)) {
-
-            System.out.println();
-            System.out.println(
-                    "This email is already linked to another customer!"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-
-
-    public boolean validateAccountNumber(int accountNumber)
-            throws SQLException {
-
-        if (accountService.accountNumberExists(accountNumber)) {
-
-            System.out.println();
-            System.out.println(
-                    "An account with this account number already exists."
-            );
-
-            return false;
-        }
-
-
-        return true;
-    }
 
         public boolean validateOpeningBalance(double openingBalance) {
         if (openingBalance < 0) {
@@ -196,7 +115,7 @@ public class ValidationService {
 
     public boolean isValidPin(String pin) {
 
-        if (!pin.matches("\\d{4}")) {
+        if (pin == null || !pin.matches("\\d{4}")) {
 
             System.out.println();
             System.out.println("PIN must contain exactly 4 digits!");

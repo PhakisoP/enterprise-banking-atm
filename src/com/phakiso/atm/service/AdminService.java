@@ -18,81 +18,182 @@ public class AdminService {
 
 
     public void createCustomer() throws SQLException {
-            System.out.println("================================");
-            System.out.println("    Create New Customer");
-            System.out.println("================================");
+
+        System.out.println("================================");
+        System.out.println("    Create New Customer");
+        System.out.println("================================");
+
+
+        // ==========================================
+        // CUSTOMER ID
+        // ==========================================
 
         System.out.print("Enter Customer ID: ");
         int customerID = scanner.nextInt();
 
-        if (!validationService.validateCustomerId(customerID)) {
+        // Customer IDs must be unique in the database.
+        if (bankService.customerIdExists(customerID)) {
+
+            System.out.println();
+            System.out.println("Customer ID already exists!");
+
             return;
         }
 
+
+        // ==========================================
+        // SOUTH AFRICAN ID NUMBER
+        // ==========================================
 
         System.out.print("Enter ID number: ");
         String idNumber = scanner.next();
 
-        if (!validationService.validateIdNumber(idNumber)) {
-            return;
-        }
+        // Validate the structure, date and checksum
+        // of the South African ID number.
         if (!validationService.isValidIdNumber(idNumber)) {
             return;
         }
 
+        // The ID number must also be unique.
+        if (bankService.idNumberExists(idNumber)) {
 
-                    System.out.print("Enter Phone Number: ");
-    String phoneNumber = scanner.next();
-        if (!validationService.validatePhoneNumber(phoneNumber)) {
+            System.out.println();
+            System.out.println(
+                    "A customer with this ID already exists!"
+            );
+
             return;
         }
 
-                    System.out.print("Enter Email: ");
-    String email = scanner.next();
-        if (!validationService.validateEmail(email)) {
+
+        // ==========================================
+        // PHONE NUMBER
+        // ==========================================
+
+        System.out.print("Enter Phone Number: ");
+        String phoneNumber = scanner.next();
+
+        // Phone numbers must be unique in the database.
+        if (bankService.phoneNumberExists(phoneNumber)) {
+
+            System.out.println();
+            System.out.println(
+                    "This Phone number is already linked to another customer!"
+            );
+
             return;
         }
 
-                    System.out.print("Enter Account Number: ");
-    int accountNumber = scanner.nextInt();
-        if (!validationService.validateAccountNumber(accountNumber)) {
+
+        // ==========================================
+        // EMAIL
+        // ==========================================
+
+        System.out.print("Enter Email: ");
+        String email = scanner.next();
+
+        // Email addresses must be unique in the database.
+        if (bankService.emailExists(email)) {
+
+            System.out.println();
+            System.out.println(
+                    "This email is already linked to another customer!"
+            );
+
             return;
         }
+
+
+        // ==========================================
+        // ACCOUNT NUMBER
+        // ==========================================
+
+        System.out.print("Enter Account Number: ");
+        int accountNumber = scanner.nextInt();
+
+        // Account numbers must be unique in the database.
+        if (accountService.accountNumberExists(accountNumber)) {
+
+            System.out.println();
+            System.out.println(
+                    "An account with this account number already exists."
+            );
+
+            return;
+        }
+
+
+        // ==========================================
+        // FIRST NAME
+        // ==========================================
 
         System.out.print("Enter First Name: ");
         String firstName = scanner.next();
+
         if (!validationService.isValidName(firstName)) {
+
             System.out.println();
             System.out.println("First Name is invalid!");
+
             return;
         }
+
+
+        // ==========================================
+        // LAST NAME
+        // ==========================================
 
         System.out.print("Enter Last Name: ");
         String lastName = scanner.next();
+
         if (!validationService.isValidName(lastName)) {
+
             System.out.println();
             System.out.println("Last Name is invalid!");
+
             return;
         }
 
-                    System.out.print("Enter Account type: ");
-    String accountType = scanner.next();
+
+        // ==========================================
+        // ACCOUNT TYPE
+        // ==========================================
+
+        System.out.print("Enter Account type: ");
+        String accountType = scanner.next();
+
         if (!validationService.isValidAccountType(accountType)) {
             return;
         }
 
 
-                    System.out.print("Enter Opening Balance: ");
+        // ==========================================
+        // OPENING BALANCE
+        // ==========================================
+
+        System.out.print("Enter Opening Balance: ");
         double openingBalance = scanner.nextDouble();
+
         if (!validationService.validateOpeningBalance(openingBalance)) {
             return;
         }
 
+
+        // ==========================================
+        // PIN
+        // ==========================================
+
         System.out.print("Enter Pin: ");
-    String pin = scanner.next();
+        String pin = scanner.next();
+
         if (!validationService.isValidPin(pin)) {
             return;
         }
+
+
+        // ==========================================
+        // CREATE CUSTOMER
+        // ==========================================
 
         Customer customer = bankService.createCustomer(
                 customerID,
@@ -107,16 +208,25 @@ public class AdminService {
                 pin
         );
 
+
+        // ==========================================
+        // SUCCESS MESSAGE
+        // ==========================================
+
         System.out.println();
         System.out.println("Customer created successfully!");
-        System.out.println("Customer: "
-                + customer.getFirstName()
-                + " "
-                + customer.getLastName());
 
-        System.out.println("Account Number: "
-                + customer.getAccount().getAccountNumber());
+        System.out.println(
+                "Customer: "
+                        + customer.getFirstName()
+                        + " "
+                        + customer.getLastName()
+        );
 
+        System.out.println(
+                "Account Number: "
+                        + customer.getAccount().getAccountNumber()
+        );
     }
 
     public void findCustomer() throws SQLException {
