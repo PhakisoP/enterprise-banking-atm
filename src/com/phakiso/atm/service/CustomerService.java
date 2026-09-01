@@ -6,16 +6,12 @@ import java.util.Scanner;
 
 public class CustomerService {
 
-    private final AuthenticationService authenticationService;
     private final ATMService atmService;
     private final Scanner scanner;
 
     public CustomerService(Scanner scanner) {
 
         this.scanner = scanner;
-
-        this.authenticationService =
-                new AuthenticationService(scanner);
 
         this.atmService =
                 new ATMService();
