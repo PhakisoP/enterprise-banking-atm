@@ -57,19 +57,6 @@ public class AccountService {
     }
 
 
-    public boolean updatePin(
-            Connection connection,
-            int accountNumber,
-            String newPin)
-            throws SQLException {
-
-        return accountDatabaseRepository.updatePin(
-                connection,
-                accountNumber,
-                newPin
-        );
-    }
-
     // ============================================================
     // ACCOUNT NUMBER EXISTS
     // ============================================================
