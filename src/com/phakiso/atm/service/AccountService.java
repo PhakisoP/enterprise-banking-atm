@@ -15,17 +15,6 @@ public class AccountService {
     // UPDATE BALANCE
     // ============================================================
 
-    public boolean updateBalance(
-            int accountNumber,
-            double newBalance)
-            throws SQLException {
-
-        return accountDatabaseRepository.updateBalance(
-                accountNumber,
-                newBalance
-        );
-    }
-
 
     public boolean updateBalance(
             Connection connection,
