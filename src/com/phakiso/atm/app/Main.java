@@ -2,16 +2,19 @@ package com.phakiso.atm.app;
 
 import com.phakiso.atm.service.AdminService;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
+        Scanner scanner = new Scanner(System.in);
+
         try {
 
             // Launch Bank Admin System
             AdminService adminService =
-                    new AdminService();
+                    new AdminService(scanner);
 
             adminService.displayAdminMenu();
 

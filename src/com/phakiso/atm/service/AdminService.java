@@ -1,21 +1,27 @@
 package com.phakiso.atm.service;
 
-import com.phakiso.atm.service.CustomerService;
-import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.model.Customer;
 import java.util.Scanner;
 import java.sql.SQLException;
 
 public class AdminService {
 
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner;
+
     private final ValidationService validationService =
             new ValidationService();
+
     private final BankService bankService =
             new BankService();
+
     private final AccountService accountService =
             new AccountService();
 
+
+    public AdminService(Scanner scanner) {
+
+        this.scanner = scanner;
+    }
 
     public void createCustomer() throws SQLException {
 
