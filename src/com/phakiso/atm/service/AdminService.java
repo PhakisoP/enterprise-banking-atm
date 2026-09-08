@@ -417,7 +417,11 @@ public class AdminService {
                 case 5:
 
                     AuthenticationService authenticationService =
-                            new AuthenticationService(scanner);
+                            new AuthenticationService(
+                                    scanner,
+                                    bankService,
+                                    accountService
+                            );
 
                     CustomerService customerService =
                             new CustomerService(scanner);

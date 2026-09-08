@@ -7,16 +7,18 @@ import java.util.Scanner;
 
 public class AuthenticationService {
 
-    private final BankService bankService =
-            new BankService();
-
-    private final AccountService accountService =
-            new AccountService();
-
+    private final BankService bankService;
+    private final AccountService accountService;
     private final Scanner scanner;
 
-    public AuthenticationService(Scanner scanner) {
+    public AuthenticationService(
+            Scanner scanner,
+            BankService bankService,
+            AccountService accountService) {
+
         this.scanner = scanner;
+        this.bankService = bankService;
+        this.accountService = accountService;
     }
 
 
