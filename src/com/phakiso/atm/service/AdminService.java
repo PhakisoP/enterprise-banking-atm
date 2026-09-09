@@ -7,6 +7,7 @@ import java.sql.SQLException;
 public class AdminService {
 
     private final Scanner scanner;
+    private final ATMService atmService;
 
     private final ValidationService validationService =
             new ValidationService();
@@ -18,9 +19,10 @@ public class AdminService {
             new AccountService();
 
 
-    public AdminService(Scanner scanner) {
+    public AdminService(Scanner scanner, ATMService atmService) {
 
         this.scanner = scanner;
+        this.atmService = atmService;
     }
 
     public void createCustomer() throws SQLException {
@@ -424,7 +426,10 @@ public class AdminService {
                             );
 
                     CustomerService customerService =
-                            new CustomerService(scanner);
+                            new CustomerService(
+                                    scanner,
+                                    atmService
+                            );
 
                     while (true) {
 

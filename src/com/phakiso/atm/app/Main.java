@@ -1,5 +1,6 @@
 package com.phakiso.atm.app;
 
+import com.phakiso.atm.service.ATMService;
 import com.phakiso.atm.service.AdminService;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -12,9 +13,12 @@ public class Main {
 
         try {
 
-            // Launch Bank Admin System
+            // Create the ATM service used by the customer banking flow.
+            ATMService atmService = new ATMService();
+
+            // Launch Bank Admin System.
             AdminService adminService =
-                    new AdminService(scanner);
+                    new AdminService(scanner, atmService);
 
             adminService.displayAdminMenu();
 

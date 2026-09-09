@@ -9,12 +9,9 @@ public class CustomerService {
     private final ATMService atmService;
     private final Scanner scanner;
 
-    public CustomerService(Scanner scanner) {
-
+    public CustomerService(Scanner scanner, ATMService atmService) {
         this.scanner = scanner;
-
-        this.atmService =
-                new ATMService();
+        this.atmService = atmService;
     }
 
 
