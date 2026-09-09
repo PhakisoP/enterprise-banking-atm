@@ -12,14 +12,19 @@ import java.util.List;
 
 public class TransactionService {
 
-    private final AccountService accountService =
-            new AccountService();
+    private final AccountService accountService;
+    private final BankService bankService;
 
     private final TransactionDatabaseRepository transactionDatabaseRepository =
             new TransactionDatabaseRepository();
 
-    private final BankService bankService =
-            new BankService();
+    public TransactionService(
+            AccountService accountService,
+            BankService bankService) {
+
+        this.accountService = accountService;
+        this.bankService = bankService;
+    }
 
 
     /**
@@ -110,6 +115,7 @@ public class TransactionService {
                 "Deposit completed successfully."
         );
     }
+
 
 
     // ==========================================

@@ -10,17 +10,24 @@ import java.util.Scanner;
 public class ATMService {
 
     private final TransactionService transactionService;
+
     private final AccountService accountService =
             new AccountService();
+
+    private final BankService bankService =
+            new BankService();
+
     private final ValidationService validationService =
             new ValidationService();
 
     public ATMService() {
 
         transactionService =
-                new TransactionService();
+                new TransactionService(
+                        accountService,
+                        bankService
+                );
     }
-
 
     // ==========================================
     // CHECK BALANCE

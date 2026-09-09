@@ -3,6 +3,9 @@ package com.phakiso.atm.app;
 import com.phakiso.atm.model.BankAccount;
 import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.service.TransactionService;
+import com.phakiso.atm.service.AccountService;
+import com.phakiso.atm.service.BankService;
+
 import java.sql.SQLException;
 
 public class TransactionServiceDatabaseTest {
@@ -33,8 +36,17 @@ public class TransactionServiceDatabaseTest {
                         account
                 );
 
+        AccountService accountService =
+                new AccountService();
+
+        BankService bankService =
+                new BankService();
+
         TransactionService transactionService =
-                new TransactionService();
+                new TransactionService(
+                        accountService,
+                        bankService
+                );
 
 
         // ==========================================
