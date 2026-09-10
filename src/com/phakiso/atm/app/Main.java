@@ -5,6 +5,7 @@ import com.phakiso.atm.service.AdminService;
 import com.phakiso.atm.service.AccountService;
 import com.phakiso.atm.service.BankService;
 import com.phakiso.atm.service.TransactionService;
+import com.phakiso.atm.service.ValidationService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -27,9 +28,15 @@ public class Main {
                             bankService
                     );
 
+            ValidationService validationService =
+                    new ValidationService();
+
 // Create the ATM service.
             ATMService atmService =
-                    new ATMService(transactionService);
+                    new ATMService(
+                            transactionService,
+                            validationService
+                    );
 
 // Launch Bank Admin System.
             AdminService adminService =

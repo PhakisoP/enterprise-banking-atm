@@ -14,12 +14,14 @@ public class ATMService {
     private final AccountService accountService =
             new AccountService();
 
-    private final ValidationService validationService =
-            new ValidationService();
+    private final ValidationService validationService;
 
-    public ATMService(TransactionService transactionService) {
+    public ATMService(
+            TransactionService transactionService,
+            ValidationService validationService) {
 
         this.transactionService = transactionService;
+        this.validationService = validationService;
     }
 
     // ==========================================
