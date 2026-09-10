@@ -8,6 +8,7 @@ import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.service.ValidationService;
 import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.service.CustomerService;
+import com.phakiso.atm.repository.AccountDatabaseRepository;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -21,8 +22,14 @@ public class Main {
         try {
 
             // Create the services required by the banking flow.
-            AccountService accountService = new AccountService();
-            BankService bankService = new BankService();
+            AccountDatabaseRepository accountDatabaseRepository =
+                    new AccountDatabaseRepository();
+
+            AccountService accountService =
+                    new AccountService(accountDatabaseRepository);
+
+            BankService bankService =
+                    new BankService();
 
             TransactionService transactionService =
                     new TransactionService(

@@ -7,14 +7,18 @@ import java.sql.SQLException;
 
 public class AccountService {
 
-    private final AccountDatabaseRepository accountDatabaseRepository =
-            new AccountDatabaseRepository();
+    private final AccountDatabaseRepository accountDatabaseRepository;
+
+    public AccountService(
+            AccountDatabaseRepository accountDatabaseRepository) {
+
+        this.accountDatabaseRepository = accountDatabaseRepository;
+    }
 
 
     // ============================================================
     // UPDATE BALANCE
     // ============================================================
-
 
     public boolean updateBalance(
             Connection connection,

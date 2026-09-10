@@ -5,6 +5,7 @@ import com.phakiso.atm.model.Customer;
 import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.service.AccountService;
 import com.phakiso.atm.service.BankService;
+import com.phakiso.atm.repository.AccountDatabaseRepository;
 
 import java.sql.SQLException;
 
@@ -36,8 +37,11 @@ public class TransactionServiceDatabaseTest {
                         account
                 );
 
+        AccountDatabaseRepository accountDatabaseRepository =
+                new AccountDatabaseRepository();
+
         AccountService accountService =
-                new AccountService();
+                new AccountService(accountDatabaseRepository);
 
         BankService bankService =
                 new BankService();
