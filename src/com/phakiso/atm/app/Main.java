@@ -6,6 +6,8 @@ import com.phakiso.atm.service.AccountService;
 import com.phakiso.atm.service.BankService;
 import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.service.ValidationService;
+import com.phakiso.atm.service.AuthenticationService;
+import com.phakiso.atm.service.CustomerService;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -35,7 +37,21 @@ public class Main {
             ATMService atmService =
                     new ATMService(
                             transactionService,
+                            accountService,
                             validationService
+                    );
+
+            AuthenticationService authenticationService =
+                    new AuthenticationService(
+                            scanner,
+                            bankService,
+                            accountService
+                    );
+
+            CustomerService customerService =
+                    new CustomerService(
+                            scanner,
+                            atmService
                     );
 
 // Launch Bank Admin System.
@@ -43,7 +59,11 @@ public class Main {
                     new AdminService(
                             scanner,
                             atmService,
-                            accountService
+                            accountService,
+                            bankService,
+                            validationService,
+                            authenticationService,
+                            customerService
                     );
 
             adminService.displayAdminMenu();

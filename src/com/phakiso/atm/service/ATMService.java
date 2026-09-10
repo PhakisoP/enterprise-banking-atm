@@ -10,17 +10,16 @@ import java.util.Scanner;
 public class ATMService {
 
     private final TransactionService transactionService;
-
-    private final AccountService accountService =
-            new AccountService();
-
+    private final AccountService accountService;
     private final ValidationService validationService;
 
     public ATMService(
             TransactionService transactionService,
+            AccountService accountService,
             ValidationService validationService) {
 
         this.transactionService = transactionService;
+        this.accountService = accountService;
         this.validationService = validationService;
     }
 

@@ -7,25 +7,31 @@ import java.sql.SQLException;
 public class AdminService {
 
     private final Scanner scanner;
+
     private final ATMService atmService;
-
-    private final ValidationService validationService =
-            new ValidationService();
-
-    private final BankService bankService =
-            new BankService();
-
     private final AccountService accountService;
+    private final BankService bankService;
+    private final ValidationService validationService;
 
+    private final AuthenticationService authenticationService;
+    private final CustomerService customerService;
 
     public AdminService(
             Scanner scanner,
             ATMService atmService,
-            AccountService accountService) {
+            AccountService accountService,
+            BankService bankService,
+            ValidationService validationService,
+            AuthenticationService authenticationService,
+            CustomerService customerService) {
 
         this.scanner = scanner;
         this.atmService = atmService;
         this.accountService = accountService;
+        this.bankService = bankService;
+        this.validationService = validationService;
+        this.authenticationService = authenticationService;
+        this.customerService = customerService;
     }
 
     public void createCustomer() throws SQLException {
@@ -421,19 +427,6 @@ public class AdminService {
 
                 case 5:
 
-                    AuthenticationService authenticationService =
-                            new AuthenticationService(
-                                    scanner,
-                                    bankService,
-                                    accountService
-                            );
-
-                    CustomerService customerService =
-                            new CustomerService(
-                                    scanner,
-                                    atmService
-                            );
-
                     while (true) {
 
                         Customer loggedInCustomer =
@@ -448,8 +441,7 @@ public class AdminService {
                             break;
                         }
 
-                        System.out.println();
-                        System.out.println("Please try again.");
+                        System.out.println("Please try again: ");
                     }
 
                     break;
