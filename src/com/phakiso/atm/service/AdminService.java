@@ -15,14 +15,17 @@ public class AdminService {
     private final BankService bankService =
             new BankService();
 
-    private final AccountService accountService =
-            new AccountService();
+    private final AccountService accountService;
 
 
-    public AdminService(Scanner scanner, ATMService atmService) {
+    public AdminService(
+            Scanner scanner,
+            ATMService atmService,
+            AccountService accountService) {
 
         this.scanner = scanner;
         this.atmService = atmService;
+        this.accountService = accountService;
     }
 
     public void createCustomer() throws SQLException {

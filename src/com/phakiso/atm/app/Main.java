@@ -2,6 +2,10 @@ package com.phakiso.atm.app;
 
 import com.phakiso.atm.service.ATMService;
 import com.phakiso.atm.service.AdminService;
+import com.phakiso.atm.service.AccountService;
+import com.phakiso.atm.service.BankService;
+import com.phakiso.atm.service.TransactionService;
+
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -13,12 +17,27 @@ public class Main {
 
         try {
 
-            // Create the ATM service used by the customer banking flow.
-            ATMService atmService = new ATMService();
+            // Create the services required by the banking flow.
+            AccountService accountService = new AccountService();
+            BankService bankService = new BankService();
 
-            // Launch Bank Admin System.
+            TransactionService transactionService =
+                    new TransactionService(
+                            accountService,
+                            bankService
+                    );
+
+// Create the ATM service.
+            ATMService atmService =
+                    new ATMService(transactionService);
+
+// Launch Bank Admin System.
             AdminService adminService =
-                    new AdminService(scanner, atmService);
+                    new AdminService(
+                            scanner,
+                            atmService,
+                            accountService
+                    );
 
             adminService.displayAdminMenu();
 

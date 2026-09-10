@@ -20,13 +20,9 @@ public class ATMService {
     private final ValidationService validationService =
             new ValidationService();
 
-    public ATMService() {
+    public ATMService(TransactionService transactionService) {
 
-        transactionService =
-                new TransactionService(
-                        accountService,
-                        bankService
-                );
+        this.transactionService = transactionService;
     }
 
     // ==========================================
