@@ -10,12 +10,16 @@ import java.util.List;
 
 public class BankService {
 
-    private final CustomerDatabaseRepository customerDatabaseRepository =
-            new CustomerDatabaseRepository();
+    private final CustomerDatabaseRepository customerDatabaseRepository;
+    private final CustomerFactory customerFactory;
 
-    private final CustomerFactory customerFactory =
-            new CustomerFactory();
+    public BankService(
+            CustomerDatabaseRepository customerDatabaseRepository,
+            CustomerFactory customerFactory) {
 
+        this.customerDatabaseRepository = customerDatabaseRepository;
+        this.customerFactory = customerFactory;
+    }
 
     public List<Customer> getAllCustomers()
             throws SQLException {

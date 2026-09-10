@@ -9,6 +9,9 @@ import com.phakiso.atm.service.ValidationService;
 import com.phakiso.atm.service.AuthenticationService;
 import com.phakiso.atm.service.CustomerService;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
+import com.phakiso.atm.factory.CustomerFactory;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
+import com.phakiso.atm.repository.TransactionDatabaseRepository;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -22,6 +25,13 @@ public class Main {
         try {
 
             // Create the services required by the banking flow.
+
+            CustomerDatabaseRepository customerDatabaseRepository =
+                    new CustomerDatabaseRepository();
+
+            CustomerFactory customerFactory =
+                    new CustomerFactory();
+
             AccountDatabaseRepository accountDatabaseRepository =
                     new AccountDatabaseRepository();
 
@@ -29,14 +39,20 @@ public class Main {
                     new AccountService(accountDatabaseRepository);
 
             BankService bankService =
-                    new BankService();
+                    new BankService(
+                            customerDatabaseRepository,
+                            customerFactory
+                    );
+
+            TransactionDatabaseRepository transactionDatabaseRepository =
+                    new TransactionDatabaseRepository();
 
             TransactionService transactionService =
                     new TransactionService(
                             accountService,
-                            bankService
+                            bankService,
+                            transactionDatabaseRepository
                     );
-
             ValidationService validationService =
                     new ValidationService();
 

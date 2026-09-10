@@ -6,6 +6,7 @@ import com.phakiso.atm.model.Transaction;
 import com.phakiso.atm.repository.TransactionDatabaseRepository;
 import com.phakiso.atm.util.DatabaseConnection;
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -15,15 +16,17 @@ public class TransactionService {
     private final AccountService accountService;
     private final BankService bankService;
 
-    private final TransactionDatabaseRepository transactionDatabaseRepository =
-            new TransactionDatabaseRepository();
+    private final TransactionDatabaseRepository transactionDatabaseRepository;
 
     public TransactionService(
             AccountService accountService,
-            BankService bankService) {
+            BankService bankService,
+            TransactionDatabaseRepository transactionDatabaseRepository) {
 
         this.accountService = accountService;
         this.bankService = bankService;
+        this.transactionDatabaseRepository =
+                transactionDatabaseRepository;
     }
 
 

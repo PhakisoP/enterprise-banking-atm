@@ -6,6 +6,9 @@ import com.phakiso.atm.service.TransactionService;
 import com.phakiso.atm.service.AccountService;
 import com.phakiso.atm.service.BankService;
 import com.phakiso.atm.repository.AccountDatabaseRepository;
+import com.phakiso.atm.factory.CustomerFactory;
+import com.phakiso.atm.repository.CustomerDatabaseRepository;
+import com.phakiso.atm.repository.TransactionDatabaseRepository;
 
 import java.sql.SQLException;
 
@@ -43,15 +46,26 @@ public class TransactionServiceDatabaseTest {
         AccountService accountService =
                 new AccountService(accountDatabaseRepository);
 
+        CustomerDatabaseRepository customerDatabaseRepository =
+                new CustomerDatabaseRepository();
+
+        CustomerFactory customerFactory =
+                new CustomerFactory();
+
         BankService bankService =
-                new BankService();
+                new BankService(
+                        customerDatabaseRepository,
+                        customerFactory
+                );
+        TransactionDatabaseRepository transactionDatabaseRepository =
+                new TransactionDatabaseRepository();
 
         TransactionService transactionService =
                 new TransactionService(
                         accountService,
-                        bankService
+                        bankService,
+                        transactionDatabaseRepository
                 );
-
 
         // ==========================================
         // TEST DEPOSIT
