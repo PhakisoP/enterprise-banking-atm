@@ -14,9 +14,6 @@ public class ATMService {
     private final AccountService accountService =
             new AccountService();
 
-    private final BankService bankService =
-            new BankService();
-
     private final ValidationService validationService =
             new ValidationService();
 
