@@ -8,7 +8,6 @@ public class AdminService {
 
     private final Scanner scanner;
 
-    private final ATMService atmService;
     private final AccountService accountService;
     private final BankService bankService;
     private final ValidationService validationService;
@@ -18,7 +17,6 @@ public class AdminService {
 
     public AdminService(
             Scanner scanner,
-            ATMService atmService,
             AccountService accountService,
             BankService bankService,
             ValidationService validationService,
@@ -26,7 +24,6 @@ public class AdminService {
             CustomerService customerService) {
 
         this.scanner = scanner;
-        this.atmService = atmService;
         this.accountService = accountService;
         this.bankService = bankService;
         this.validationService = validationService;

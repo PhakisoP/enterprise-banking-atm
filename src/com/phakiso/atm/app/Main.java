@@ -81,7 +81,6 @@ public class Main {
             AdminService adminService =
                     new AdminService(
                             scanner,
-                            atmService,
                             accountService,
                             bankService,
                             validationService,
