@@ -52,26 +52,9 @@ public class AccountDatabaseRepository {
         WHERE account_number = ?
         """;
 
-
     // ============================================================
     // UPDATE BALANCE
     // ============================================================
-
-    public boolean updateBalance(
-            int accountNumber,
-            double newBalance)
-            throws SQLException {
-
-        try (Connection connection =
-                     DatabaseConnection.getConnection()) {
-
-            return updateBalance(
-                    connection,
-                    accountNumber,
-                    newBalance
-            );
-        }
-    }
 
 
     public boolean updateBalance(
