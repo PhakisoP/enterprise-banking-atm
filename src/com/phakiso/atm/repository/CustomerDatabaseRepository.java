@@ -27,25 +27,6 @@ public class CustomerDatabaseRepository {
             VALUES (?, ?, ?, ?, ?)
             """;
 
-    private static final String FIND_CUSTOMER_BY_ID_SQL = """
-            SELECT
-                c.customer_id,
-                c.id_number,
-                c.phone_number,
-                c.email,
-                c.first_name,
-                c.last_name,
-                a.account_number,
-                a.account_type,
-                a.balance,
-                a.pin,
-                a.failed_attempts,
-                a.is_locked
-            FROM customers c
-            LEFT JOIN accounts a
-                ON c.customer_id = a.customer_id
-            WHERE c.customer_id = ?
-            """;
 
     private static final String FIND_CUSTOMER_BY_ACCOUNT_SQL = """
             SELECT
@@ -360,38 +341,6 @@ public class CustomerDatabaseRepository {
 
             statement.executeUpdate();
         }
-    }
-
-
-    // ============================================================
-    // FIND CUSTOMER BY CUSTOMER ID
-    // ============================================================
-
-    public Customer findCustomerById(int customerId)
-            throws SQLException {
-
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
-             PreparedStatement statement =
-                     connection.prepareStatement(
-                             FIND_CUSTOMER_BY_ID_SQL)) {
-
-            statement.setInt(
-                    1,
-                    customerId
-            );
-
-            try (ResultSet resultSet =
-                         statement.executeQuery()) {
-
-                if (resultSet.next()) {
-
-                    return mapCustomer(resultSet);
-                }
-            }
-        }
-
-        return null;
     }
 
 
