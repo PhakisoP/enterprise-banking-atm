@@ -12,12 +12,15 @@ public class ATMService {
     private final TransactionService transactionService;
     private final AccountService accountService;
     private final ValidationService validationService;
+    private final Scanner scanner;
 
     public ATMService(
+            Scanner scanner,
             TransactionService transactionService,
             AccountService accountService,
             ValidationService validationService) {
 
+        this.scanner = scanner;
         this.transactionService = transactionService;
         this.accountService = accountService;
         this.validationService = validationService;
@@ -43,8 +46,7 @@ public class ATMService {
     // ==========================================
 
     public void deposit(
-            Customer customer,
-            Scanner scanner) throws SQLException {
+            Customer customer) throws SQLException {
 
         System.out.print(
                 "Enter deposit amount: R"
@@ -65,8 +67,7 @@ public class ATMService {
     // ==========================================
 
     public void withdraw(
-            Customer customer,
-            Scanner scanner) throws SQLException {
+            Customer customer) throws SQLException {
 
         System.out.print(
                 "Enter withdrawal amount: R"
@@ -100,8 +101,7 @@ public class ATMService {
     // ==========================================
 
     public void transferMoney(
-            Customer sender,
-            Scanner scanner)
+            Customer sender)
             throws SQLException {
 
         System.out.print(
@@ -132,9 +132,8 @@ public class ATMService {
 
 
     public void changePin(
-            Customer customer,
-            Scanner scanner)
-            throws SQLException {
+            Customer customer)
+            throws SQLException{
 
         BankAccount account =
                 customer.getAccount();

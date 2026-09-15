@@ -59,6 +59,7 @@ public class Main {
 // Create the ATM service.
             ATMService atmService =
                     new ATMService(
+                            scanner,
                             transactionService,
                             accountService,
                             validationService

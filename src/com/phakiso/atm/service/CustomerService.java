@@ -47,22 +47,22 @@ public class CustomerService {
                     break;
 
                 case 2:
-                    atmService.deposit(customer, scanner);
+                    atmService.deposit(customer);
                     break;
 
                 case 3:
-                    atmService.withdraw(customer, scanner);
+                    atmService.withdraw(customer);
                     break;
 
                 case 4:
                     atmService.miniStatement(customer);
                     break;
                 case 5:
-                    atmService.changePin(customer, scanner);
+                    atmService.changePin(customer);
                     break;
 
                 case 6:
-                    atmService.transferMoney(customer, scanner);
+                    atmService.transferMoney(customer);
                     break;
 
                 case 7:
